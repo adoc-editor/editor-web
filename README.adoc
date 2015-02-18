@@ -1,0 +1,3 @@
+= editor-web
+
+Editor as a Web Application for all devices (mobile,tablet...)
