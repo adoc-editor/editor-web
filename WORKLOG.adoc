@@ -1,0 +1,12 @@
+= WORKLOG
+
+== TODO
+
+* Add documentation about Firebase integration
+* Add tests for controllers
+* Add tests for services
+* Add "collaborative/simultaneous editing" feature with Firepad
+* Add "comments" feature
+* Create directives for Github components
+** directives for search component
+** directives for file component

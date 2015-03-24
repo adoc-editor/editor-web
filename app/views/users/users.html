@@ -1,0 +1,35 @@
+<div ng-controller="UsersCtrl as users">
+    <md-toolbar class="md-theme-red" >
+        <h1 class="md-toolbar-tools" style="color:white;">Users
+
+            <md-button aria-label="Close" class="md-button-fab" ng-click="users.close()">
+                <md-icon icon="images/md-icons/navigation/svg/ic_close_24px.svg">
+                </md-icon>
+            </md-button>
+        </h1>
+    </md-toolbar>
+    <md-content class="md-content-padding" style="height: 600px;" flex layout-fill>
+        <div>
+            <div ng-show="user">
+                <p>Hello, {{user.github.displayName}}</p>
+            </div>
+        </div>
+        <section>
+            <md-subheader class="md-primary">Authors</md-subheader>
+            <md-list>
+                <md-item ng-repeat="author in users.authors">
+                    <md-item-content>
+                        <div class="md-tile-left">
+                        </div>
+                        <div class="md-tile-content">
+                            <h4>{{author.github.username}}</h4>
+                            <p>
+                                {{author.github.email}}
+                            </p>
+                        </div>
+                    </md-item-content>
+                </md-item>
+            </md-list>
+            </section>
+    </md-content>
+</div>

@@ -1,0 +1,21 @@
+<head/><md-dialog aria-label="Login app">
+    <md-content md-theme="light-blue-dark">
+        <form style="padding: 20px;">
+            <div class="row">
+                <md-text-float label="Login" ng-model="user.title"></md-text-float>
+                <md-text-float label="Password" ng-model="user.email" type="email"></md-text-float>
+            </div>
+        </form>
+    </md-content>
+    <div class="md-actions" layout="horizontal" layout-align="end">
+        <md-button ng-click="cancel()">
+            Cancel
+        </md-button>
+        <md-button class="md-primary" ng-click="hide()">
+            Okay
+        </md-button>
+        <md-button class="md-primary" ng-click="auth('github')">
+            With Github
+        </md-button>
+    </div>
+</md-dialog>

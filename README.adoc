@@ -1,3 +1,33 @@
-= editor-web
+= Editor :: Web module
 
-Editor as a Web Application for all devices (mobile,tablet...)
+_Collaborative Editor for AsciiDoc projects_
+
+== How to start the web editor
+
+* Prerequisite
+** Bower and npm are already installed.
+** You have a Firebase account and
+
+. Checkout the project
+
+  git clone https://github.com/mgreau/edit-adoc.git
+
+. Install Bower dependencies
+
+  cd edit-adoc/web/ && bower install
+  Answer : 1
+
+. Install Node dependencies
+
+  npm install
+
+. Configure the Firebase backend URL
+
+  .. Open app/scripts/settings/default.js and replace the value FIREBASE_URL with your personal Firebase URL
+  .. Configure your FIREBASE  in order to accept Github Auth
+
+. Build the app and launch the server
+
+  grunt serve
+
+. Got to http://localhost:9000/#/home

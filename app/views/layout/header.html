@@ -1,0 +1,71 @@
+<md-toolbar class="md-theme" layout="row">
+    <h1 class="md-toolbar-tools">
+        <div ><img ng-click="app.toggleSidebar()" src='../../images/md-icons/navigation/svg/ic_menu_24px.svg'></div>
+
+        <md-button aria-label="Editor" class="md-button-fab" ng-href="#editor">
+            <md-tooltip>
+                Editor
+            </md-tooltip>
+            <md-icon ng-href="#editor" icon="images/md-icons/editor/svg/ic_mode_edit_24px.svg">
+            </md-icon>
+        </md-button>
+
+        <md-button aria-label="Editor and Preview (Realtime)" class="md-button-fab" ng-href="#realtime">
+            <md-tooltip>
+                Editor and Preview (Realtime)
+            </md-tooltip>
+            <md-icon icon="images/md-icons/action/svg/ic_view_column_24px.svg">
+            </md-icon>
+        </md-button>
+
+        <md-button aria-label="Preview" class="md-button-fab " ng-href="#preview">
+            <md-tooltip>
+                Preview
+            </md-tooltip>
+            <md-icon icon="images/md-icons/action/svg/ic_visibility_24px.svg">
+            </md-icon>
+        </md-button>
+<!--
+        <md-button class="md-button-fab " ng-controller="BottomSheetExample" ng-click="showListBottomSheet($event)">
+            <md-tooltip>
+                New File from...
+            </md-tooltip>
+            <md-icon icon="images/md-icons/editor/svg/ic_insert_drive_file_24px.svg">
+            </md-icon>
+        </md-button>
+        -->
+
+        <!-- users -->
+        <md-button aria-label="Users" class="md-button-fab" ng-click="app.toggleUsers()">
+            <md-tooltip>
+                Users
+            </md-tooltip>
+            <md-icon icon="images/md-icons/social/svg/ic_people_24px.svg">
+            </md-icon>
+        </md-button>
+        <!-- files -->
+        <md-button aria-label="Projects / Files" class="md-button-fab" ng-click="app.toggleProject()">
+            <md-tooltip>
+                Projects / Files
+            </md-tooltip>
+            <md-icon icon="images/md-icons/file/svg/ic_folder_24px.svg">
+            </md-icon>
+        </md-button>
+        <!-- auth -->
+        <md-button aria-label="Authentification with Github" ng-hide="user.auth.github" class="md-button-fab" ng-controller="UsersLoginCtrl as login"  ng-click="login.authentification('github')">
+            <md-tooltip>
+                Authentification with GitHub
+            </md-tooltip>
+            <md-icon icon="images/github-circle.svg">
+            </md-icon>
+        </md-button>
+        <md-button aria-label="My Profile" ng-show="user.auth.github.id" class="md-button-fab"  ng-href="#profile">
+            <md-tooltip>
+                View my profile
+            </md-tooltip>
+            <div class="md-tile-left">
+                <img ng-src="{{"user.auth.github.cachedUserProfile.avatar_url}}&s=30" class="face" alt="{{user.auth.github.username}}">
+            </div>
+        </md-button>
+    </h1>
+</md-toolbar>

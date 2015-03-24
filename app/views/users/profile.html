@@ -1,0 +1,25 @@
+<div class="col-md-12">
+  <md-content class="md-padding" >
+     <h1>My Profile </h1>
+      <p ng-show="user" >Hello {{user.auth.github.displayName}}.</p>
+      <ul ng-show="user">
+        <li>email : {{user.auth.github.email}}</li>
+        <li>username : {{user.auth.github.username}}</li>
+      </ul>
+      <h2>My projects</h2>
+      <ul ng-repeat="project in user.projects">
+        <li>{{project.name}}</li>
+      </ul>
+      <p ng-hide="user" >You need <b>to be logged with Github</b> in order to view your profile.</p>
+
+      <md-item ng-hide="user.auth.uid"><md-item-content>
+        <div class="md-tile-content">
+          <md-button aria-label="Authentification with Github" class="md-button-fab" ng-controller="UsersLoginCtrl as login"  ng-click="login.authentification('github')">
+            <md-icon icon="images/github-circle.svg">
+            </md-icon> <span>Auth with GitHub</span>
+          </md-button>
+        </div>
+      </md-item-content>
+      </md-item>
+    </md-content>
+</div>

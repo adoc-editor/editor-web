@@ -1,0 +1,22 @@
+<md-dialog aria-label="Save on Github" class="md-theme">
+  <md-content>
+    <md-subheader class="md-sticky-no-effect">Save to Github</md-subheader>
+    <div class="md-tile-content">
+      <form style="padding: 5px;">
+        <div class="row">
+          <md-text-float label="Commit message" ng-model="dialog.commit.message"></md-text-float>
+        </div>
+      </form>
+      </ul>
+    </div>
+  </md-content>
+  <div class="md-actions" layout="row">
+    <span flex></span>
+    <md-button ng-aria="Cancel commit to Github" aria-label="Cancel" ng-click="dialog.answer('Cancel')">
+     Cancel
+    </md-button>
+    <md-button ng-aria="Commit your work" aria-label="Commit" ng-click="dialog.answer('OK')" class="md-primary">
+      Commit changes
+    </md-button>
+  </div>
+</md-dialog>

@@ -1,0 +1,143 @@
+<div ng-controller="ProjectCtrl as pCtrl">
+    <md-toolbar >
+        <h1 class="md-toolbar-tools" style="color:white;">Projects
+            <md-button aria-label="Close" class="md-button-fab" ng-click="pCtrl.close()">
+                <md-icon icon="images/md-icons/navigation/svg/ic_close_24px.svg">
+                </md-icon>
+            </md-button>
+        </h1>
+    </md-toolbar>
+
+   <md-content ng-hide="user.auth.uid">
+     <md-item><md-item-content>
+       <div class="md-tile-content">
+     <p>You need to <strong>be logged in</strong> in order to Create Project and work on AsciDoc files.</p>
+       <md-button aria-label="Authentification with Github" class="md-button-fab" ng-controller="UsersLoginCtrl as login"  ng-click="login.authentification('github')">
+         <md-icon icon="images/github-circle.svg">
+         </md-icon> <span>Auth with GitHub</span>
+       </md-button>
+         </div>
+    </md-item-content></md-item>
+   </md-content>
+
+  <md-content ng-show="user.auth.uid" class="" style="" flex layout-fill>
+    <section>
+      <md-list layout="vertical">
+        <md-item >
+          <md-item-content>
+            <div class="md-tile-content">
+              <form style="padding: 1px;margin:1px" ng-submit="pCtrl.newProject()">
+                <div class="row">
+                  <md-text-float label="Create a new project"  ng-model="pCtrl.theProject.name"></md-text-float>
+                </div>
+              </form>
+                <select ng-model="pCtrl.loadedProject" ng-options="value.name for (id , value) in user.projects" ng-change="pCtrl.loadProject()">
+                <option value="">--- Load a Project ---</option>
+              </select>
+              </div>
+            </md-item-content>
+          </md-item>
+        </md-list>
+      </section>
+      <md-divider></md-divider>
+      <section ng-model="pCtrl.project">
+        <h4>Current Project : {{pCtrl.project.name}}</h4>
+          <md-item >
+            <md-item-content>
+              <div class="md-tile-content">
+                <form style="padding: 1px;"  ng-show="pCtrl.project" ng-submit="pCtrl.newBlankFile()">
+                  <div class="row">
+                    <md-text-float label="Create a new file"  ng-model="pCtrl.theNewFile.name"  ></md-text-float>
+                  </div>
+                </form>
+                <ul class="md-toolbar" >
+                  <li ng-repeat="f in pCtrl.project.files">
+                    <md-button ng-show="f.github && f.id === pCtrl.refFile.id" title="Push to GitHub" ng-click="app.showPushDialog()" class="md-button-fab" aria-label="Push to GitHub" style="width: 30px; height: 30px;">
+                      <md-tooltip>
+                        Push to Github
+                      </md-tooltip>
+                      <md-icon  icon="images/md-icons/file/svg/ic_cloud_upload_24px.svg" ></md-icon>
+                    </md-button>
+                    <md-button title="Edit" ng-click="pCtrl.editFile(f.id)" class="md-button-fab" aria-label="Edit" style="width: 30px; height: 30px;">
+                      <md-tooltip>
+                        Edit
+                      </md-tooltip>
+                      <md-icon  icon="images/md-icons/editor/svg/ic_mode_edit_18px.svg" ></md-icon>
+                    </md-button>
+                    <!-- TODO: find a better way to show the current edited file -->
+                    <span style="color:red;" ng-show="f.id === pCtrl.refFile.id">{{f.name}}</span>
+                    <span ng-hide="f.id === pCtrl.refFile.id">{{f.name}}</span>
+                  </li>
+                </ul>
+            </div>
+          </md-item-content>
+        </md-item>
+    </section>
+  </md-content>
+
+  <div ng-show="user.auth" ng-controller="GithubFilesCtrl as gfiles">
+
+    <md-content class="" style="" flex layout-fill>
+      <md-divider></md-divider>
+      <h4>Add some Github files</h4>
+      <p ng-hide="pCtrl.project"><em>NOTE : You need to <b>Create a project</b>
+        OR <b>load an existing project</b> if you want to add a file hosted on Github.</em></p>
+        <section>
+            <md-list layout="vertical">
+                <md-item >
+                    <md-item-content>
+                        <div class="md-tile-content">
+                            <select ng-model="gfiles.selectedRepository" ng-options="repo.full_name for repo in gfiles.repositories" ng-change="gfiles.getFiles(selectedRepository.sha)">
+                                <option value="">--- Github Repositories ---</option>
+                            </select>
+                            <ul class="md-toolbar">
+                                <li ng-repeat="file in gfiles.selectedRepository.files">
+                                    <md-button title="Add file to project and Edit" ng-show="pCtrl.project && file.type==='blob'" ng-click="gfiles.addToProject(null, file.sha, file.path)" class="md-button-fab" aria-label="Edit" style="width: 30px; height: 30px;">
+                                        <md-tooltip>
+                                          Add file to project and Edit
+                                        </md-tooltip>
+                                        <md-icon  icon="images/md-icons/content/svg/ic_add_circle_24px.svg" ></md-icon>
+                                    </md-button>
+                                    <md-button title="Open folder" ng-show="pCtrl.project && file.type==='tree'" ng-click="gfiles.getFiles(file.sha)" class="md-button-fab" aria-label="Edit" style="width: 30px; height: 30px;">
+                                        <md-tooltip>
+                                            Open the folder
+                                        </md-tooltip>
+                                        <md-icon  icon="images/md-icons/file/svg/ic_folder_18px.svg" ></md-icon>
+                                    </md-button>
+                                    {{file.path}}
+                                </li>
+                            </ul>
+                        </div>
+                     </md-item-content>
+                </md-item>
+            </md-list>
+        </section>
+    </md-content>
+
+    <!-- TODO => create a directive for github search -->
+    <md-content  ng-controller="GithubSearchFilesCtrl as search">
+      <md-item >
+        <md-item-content >
+          <div class="md-tile-content">
+            <form style="padding: 5px;">
+              <div class="row">
+                <md-text-float label="Search for AsciiDoc files ({{search.results.total_count}})" ng-keyup="search.searchAsciiDocFiles()" ng-model="search.query" ng-model-options="{ updateOn: 'default blur', debounce: {'default': 0, 'blur': 0} }"></md-text-float>
+              </div>
+            </form>
+            <ul>
+              <li ng-repeat="file in search.results.items">
+                <md-button ng-show="pCtrl.project"  title="Add to project and Edit" ng-click="gfiles.addToProject(file.repository.name, file.sha, file.path)" class="md-primary" md-theme="cyan" aria-label="Profile" style="width: 30px; height: 30px;">
+                  <md-icon  icon="images/md-icons/content/svg/ic_add_circle_24px.svg" ></md-icon>
+                </md-button>
+                <span ng-click="gfiles.addToProject(file.repository.name, file.sha, file.path)">{{file.name}} ({{file.repository.full_name}})</span>
+              </li>
+            </ul>
+          </div>
+        </md-item-content>
+        <md-divider></md-divider>
+      </md-item>
+    </md-content>
+
+  </div>
+
+</div>
