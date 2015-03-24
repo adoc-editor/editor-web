@@ -2,6 +2,8 @@
 bower_components/
 app/bower_components/
 
+.idea
+
 # Build / Dist files
 build
 dist
