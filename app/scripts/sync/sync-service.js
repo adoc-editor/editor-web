@@ -24,11 +24,21 @@
     }
 
     var syncFileAsObject = function(projectId, fileId) {
-          return $firebaseObject(ref.child(projectId).child("files").child(fileId));
+        return $firebaseObject(ref.child(projectId).child("files").child(fileId));
     }
 
-      var syncFileAsArray = function(projectId, fileId) {
-          return $firebaseArray(ref.child(projectId).child("files").child(fileId));
+    var syncFileAsArray = function(projectId, fileId) {
+        return $firebaseArray(ref.child(projectId).child("files").child(fileId));
+    }
+
+    var syncFile = function(projectId, fileId) {
+        return (ref.child(projectId).child("files").child(fileId));
+    }
+      var syncFileRevisions = function(projectId, fileId) {
+          return (ref.child(projectId).child("files").child(fileId).child("revisions"));
+      }
+      var syncFileRevisionsAsArray = function(projectId, fileId) {
+          return $firebaseArray(ref.child(projectId).child("files").child(fileId).child("revisions"));
       }
 
     var sync = function() {
@@ -39,6 +49,9 @@
       syncAsObject: syncAsObject,
       syncFileAsObject: syncFileAsObject,
       syncFileAsArray: syncFileAsArray,
+      syncFile: syncFile,
+      syncFileRevisions: syncFileRevisions,
+      syncFileRevisionsAsArray: syncFileRevisionsAsArray,
       sync: sync
     }
   }]);

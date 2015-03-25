@@ -44,15 +44,32 @@
     /**
      * Add a new file to the project
      * @param projectId the project ID
-     * @param file the file object to add to this project
+     * @param theFile the file object to add to this project
      */
-    function addFileToProject(projectId, file) {
-       //TODO: check that the file object is correct (id...)
-       var fileRef = SyncProject.syncFileAsArray(projectId, file.id).$loaded().then(function(list){
-          list.$add( {"revision" : file});
-           //list.child("revisions").push(file);
+    function addFileToProject(projectId, theFile) {
+      var file = SyncProject.syncFileAsObject(projectId, theFile.id);
+      file.$loaded().then(function(data){
+        file.id = theFile.id;
+        file.name = theFile.name;
+        file.$save().then(function(ref){
+          var fileRevisionsRef = SyncProject.syncFileRevisions(projectId, ref.key());
+          fileRevisionsRef.push(theFile.revision);
+        });
 
-       });
+      });
+    };
+
+    /**
+     * Add a new revision to an existing file
+     * @param projectId the project ID
+     * @param theFile the file object with the revision to add
+     */
+    function addRevisionToFile(projectId, theFile) {
+      var file = SyncProject.syncFileAsObject(projectId, theFile.id);
+      file.$loaded().then(function(data){
+          var fileRevisionsRef = SyncProject.syncFileRevisions(projectId, theFile.id);
+          fileRevisionsRef.push(theFile.revision);
+      });
     };
 
     /**
@@ -71,13 +88,31 @@
       return {
         id: "file:" + this.guid(),
         name: "my-sample.adoc",
-        asciidoc : "WELCOME to adoc-editor.io!",
+        revision : {
+            "asciidoc" : "WELCOME to adoc-editor.io!",
+            "label" : "auto",
+            "pdf_available" : false,
+            "html5_available" : false
+          },
         provider : "github",
         github : {
           path: 'sample.adoc',
           repo: '',
           sha: ''
         }
+      }
+    };
+
+    /**
+     * Create a sample structured revision file
+     * @return a sample revision for a file
+     */
+    function createSampleRevisionForFile() {
+      return {
+          "asciidoc" : "WELCOME to adoc-editor.io!",
+          "label" : "auto",
+          "pdf_available" : false,
+          "html5_available" : false
       }
     };
 
@@ -89,7 +124,12 @@
       return {
         id: "file:" + this.guid(),
         name: name,
-        asciidoc : "= Asciidoctor FTW"
+        revision : {
+          "asciidoc" : "= Asciidoctor FTW",
+          "label" : "auto",
+          "pdf_available" : false,
+          "html5_available" : false
+        }
       }
     };
 
@@ -106,7 +146,12 @@
       var file = {
         id: this.guid(),
         name: name,
-        asciidoc: content,
+        revision : {
+          "asciidoc" : content,
+          "label" : "auto",
+          "pdf_available" : false,
+          "html5_available" : false
+        },
         provider: provider
       }
       if (provider === "github"){
@@ -131,6 +176,7 @@
     this.addFileToProject = addFileToProject;
     this.getProject = getProject;
     this.createSampleFile = createSampleFile;
+    this.createSampleRevisionForFile = createSampleRevisionForFile;
     this.createNewBlankFile = createNewBlankFile;
     this.createFile = createFile;
     this.guid = guid;

@@ -16,8 +16,9 @@
         /** Current edited file */
         vm.refFile;
         vm.unwatchRefFile;
+        vm.revisionsAsArray;
 
-        /**
+      /**
          * Close this sidebar
          */
         vm.close = function() {
@@ -30,10 +31,14 @@
        */
       vm.listenToBackendEvent = function(idFile){
         vm.refFile = SyncProject.syncFileAsObject(vm.project.$id, idFile);
+
         vm.unwatchRefFile = vm.refFile.$watch(function(data){
           //TODO : define a workflow between users
           //console.log("file changed!");
         });
+
+        vm.revisionsAsArray = SyncProject.syncFileRevisionsAsArray(vm.project.$id, idFile);
+
 
       };
 
@@ -65,9 +70,9 @@
             if (vm.project.files[data.file.id] === undefined){
               vm.project.files[data.file.id] = {};
             }
-            vm.project.files[data.file.id].asciidoc = data.file.asciidoc;
+            vm.revisionsAsArray[0].asciidoc = data.file.asciidoc;
             //if no three way binding, then $save
-            vm.project.$save();
+            vm.revisionsAsArray.$save(0);
           }
         });
 
@@ -133,16 +138,21 @@
         vm.editFile = function(idFile){
           vm.listenToBackendEvent(idFile);
 
-          vm.sendAceLoadContentEvent({
-            file: vm.project.files[idFile]
+          vm.revisionsAsArray.$loaded().then(function(data){
+            var tmpFile = data[0];
+            tmpFile.id = idFile;
+            vm.sendAceLoadContentEvent({
+              file: tmpFile
+            });
+
+            $location.path("/editor");
+
+            vm.sendNotifyUserEvent({
+              file: vm.project.files[idFile],
+              message: "You're working on " + vm.project.files[idFile].name + " file."
+            });
           });
 
-          $location.path("/editor");
-
-          vm.sendNotifyUserEvent({
-            file: vm.project.files[idFile],
-            message: "You're working on " + vm.project.files[idFile].name + " file."
-          });
         };
 
       /**

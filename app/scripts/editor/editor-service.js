@@ -10,7 +10,7 @@
         var that = this;
 
         /** file loaded to the editor */
-        that.file =  ProjectService.createSampleFile();;
+        that.file =  ProjectService.createSampleRevisionForFile();
 
 
         function clearAnnotation() {
