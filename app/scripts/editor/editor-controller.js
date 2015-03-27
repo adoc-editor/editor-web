@@ -15,11 +15,14 @@
          * When the editor is ready
          */
         Editor.ready(function () {
+            if($rootScope.user) {
+                Editor.setUser($rootScope.user.auth.uid);
+            }
             Storage.load('file').then(function (data) {
               if (data){
-                Editor.initFileInEditorFromBrowser(data);
+                //Editor.initFileInEditorFromBrowser(data);
               }
-              Editor.updateAsciidoc();
+              //Editor.updateAsciidoc();
             });
         });
 
@@ -27,12 +30,15 @@
          * Call on each change
          */
         vm.onAceChange = function (e) {
-            Editor.updateAsciidoc();
+            if($rootScope.user) {
+                Editor.setUser($rootScope.user.auth.uid);
+            }
+
             //Storage.save('asciidoc', value);
 
             //broadcast event for preview
             $rootScope.$broadcast('aceChangeEvent', {
-                file : Editor.getFile()
+                fileRevision : Editor.getFile()
             });
         }
 
@@ -41,9 +47,15 @@
          * A backup is automatically done.
         */
         $scope.$on('aceLoadContentEvent', function (event, data) {
-            Editor.setUser($rootScope.user.auth.uid);
-            Editor.setValue(data.file);
-            vm.onAceChange();
+            if($rootScope.user) {
+                Editor.setUser($rootScope.user.auth.uid);
+            }
+            Editor.attachFileRevision(data.fileRevision);
+
+            //broadcast event for preview
+            $rootScope.$broadcast('aceChangeEvent', {
+                fileRevision : Editor.getFile()
+            });
         });
 
     }

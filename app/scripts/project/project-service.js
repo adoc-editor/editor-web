@@ -22,7 +22,6 @@
       var settings = {};
       settings["save_auto"] = true;
       settings["save_interval"] = "120";
-     // var project =
       var syncProject = SyncProject.syncAsObject(pId);
       syncProject.$loaded().then(function(data) {
           syncProject.id = pId;
@@ -30,12 +29,12 @@
           syncProject.name = projectName;
           syncProject.owner = ownerId;
           syncProject.users = user;
-
           syncProject.$save().then(function (ref) {
               //when the project is added, then attach the project to the user
               UsersService.attachProjectToUser(ownerId, ref.key(), projectName, true);
           }, function (error) {
               console.log("Error: can't create the project.", error);
+              //@TODO send an event with error message
           });
       });
       return pId;
@@ -53,7 +52,11 @@
         file.name = theFile.name;
         file.$save().then(function(ref){
           var fileRevisionsRef = SyncProject.syncFileRevisions(projectId, ref.key());
+          theFile.revision.projectId = projectId;
           fileRevisionsRef.push(theFile.revision);
+
+            return file;
+
         });
 
       });
@@ -72,24 +75,20 @@
       });
     };
 
-    /**
-     * Get a project from Firebase
-     * @param projectId the project id
-     */
-    function getProject(projectId) {
-      return SyncProject.syncAsObject(projectId);
-    };
+
 
     /**
      * Create a sample structured file with github provider
      * @return a sample file
      */
     function createSampleFile() {
+      var uid = this.guid();
       return {
-        id: "file:" + this.guid(),
+        id: "file:" + uid,
         name: "my-sample.adoc",
         revision : {
             "asciidoc" : "WELCOME to adoc-editor.io!",
+            "fileId" : "file:" + uid,
             "label" : "auto",
             "pdf_available" : false,
             "html5_available" : false
@@ -108,9 +107,11 @@
      * @return a sample revision for a file
      */
     function createSampleRevisionForFile() {
+        var uid = this.guid();
       return {
           "asciidoc" : "WELCOME to adoc-editor.io!",
           "label" : "auto",
+          "fileId" : "file:" + uid,
           "pdf_available" : false,
           "html5_available" : false
       }
@@ -121,11 +122,13 @@
      * @return a sample file
      */
     function createNewBlankFile(name) {
+        var uid = this.guid();
       return {
-        id: "file:" + this.guid(),
+        id: "file:" + uid,
         name: name,
         revision : {
           "asciidoc" : "= Asciidoctor FTW",
+          "fileId" : "file:" + uid,
           "label" : "auto",
           "pdf_available" : false,
           "html5_available" : false
@@ -143,11 +146,13 @@
      * @returns {{id: *, name: *, asciidoc: *, provider: *}}
      */
     function createFile(provider, name, content, fileMetadatas) {
+        var uid = this.guid();
       var file = {
-        id: this.guid(),
+        id: "file:" + uid,
         name: name,
         revision : {
           "asciidoc" : content,
+          "fileId" : "file:" + uid,
           "label" : "auto",
           "pdf_available" : false,
           "html5_available" : false
@@ -174,11 +179,10 @@
 
     this.createProject = createProject;
     this.addFileToProject = addFileToProject;
-    this.getProject = getProject;
-    this.createSampleFile = createSampleFile;
     this.createSampleRevisionForFile = createSampleRevisionForFile;
     this.createNewBlankFile = createNewBlankFile;
     this.createFile = createFile;
+    this.createSampleFile = createSampleFile;
     this.guid = guid;
 
   }]);

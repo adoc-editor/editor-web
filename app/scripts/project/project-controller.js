@@ -16,11 +16,8 @@
         /** Current edited file */
         vm.refFile;
 
-
         /** handle revision for the file **/
         vm.revisionsAsArray;
-        vm.refFileRevision;
-        vm.unwatchRefFileRevision;
 
       /**
          * Close this sidebar
@@ -62,6 +59,7 @@
          * @desc subscribe to the aceChangeEvent in order to have save the content on change.
          */
         $scope.$on('aceChangeEvent', function (event, data) {
+            /*
           if(vm.project !== undefined && vm.project.files !== undefined){
             if (vm.project.files[data.file.id] === undefined){
               vm.project.files[data.file.id] = {};
@@ -71,7 +69,7 @@
             // infinite loop if three way binding !!
             //if no three way binding, then $save
             vm.revisionsAsArray.$save(0);
-          }
+          }*/
         });
 
         /**
@@ -79,14 +77,15 @@
          * @param data
          */
         vm.sendAceLoadContentEvent = function(data){
+
+          if ($location.path() == "/editor"){
+              Editor.attachFileRevision(data.fileRevision);
+            //Editor.updateAsciidoc();
+          }
           //broadcast event for preview
-          if ($location.path() != "/editor"){
-            Editor.setValue(data.file);
-            Editor.updateAsciidoc();
-          } else {
+          else {
             $rootScope.$broadcast('aceLoadContentEvent', data);
           }
-
         };
 
         /**
@@ -109,24 +108,22 @@
          */
         vm.newProject = function(){
           var id = ProjectService.createProject(vm.theProject.name, $rootScope.user.auth.uid, $rootScope.user.auth.github.username);
-          vm.project = ProjectService.getProject(id);
+          vm.project = SyncProject.syncAsObject(id);
           vm.theProject.name = "";
         };
 
         /**
          * Load a project in order to work on it
-         * @param projectId
          */
         vm.loadProject = function(){
-          vm.project = ProjectService.getProject(vm.loadedProject.id);
+          vm.project = SyncProject.syncAsObject(vm.loadedProject.id);
         };
 
         /**
          * Create a new sample asciidoc file
-         * @param projectId
          */
         vm.newBlankFile = function(){
-          vm.addFileToProject({ file : ProjectService.createNewBlankFile(vm.theNewFile.name)});
+          vm.addFileToProject({ newFile : ProjectService.createNewBlankFile(vm.theNewFile.name)});
           vm.theNewFile.name = "";
         };
 
@@ -137,11 +134,11 @@
           vm.listenToBackendEvent(idFile);
 
           vm.revisionsAsArray.$loaded().then(function(data){
-            var tmpFile = data[0];
-            tmpFile.id = idFile;
-            tmpFile.projectId = vm.project.$id;
+            var tmpFileRevision = data[0];
+            tmpFileRevision.fileId = idFile;
+            tmpFileRevision.projectId = vm.project.$id;
             vm.sendAceLoadContentEvent({
-              file: tmpFile
+              fileRevision: tmpFileRevision
             });
 
             $location.path("/editor");
@@ -159,17 +156,26 @@
        * redirect to the editor view and notify the user.
        * @param data
        */
-        vm.addFileToProject = function(data){
-          var projectId = vm.project.$id;
-          ProjectService.addFileToProject(projectId, data.file);
-          vm.listenToBackendEvent(data.file.id);
-          data.file.projectId = projectId;
-          vm.sendAceLoadContentEvent(data);
-          $location.path("/editor");
-          vm.sendNotifyUserEvent({
-            file: data.file,
-            message: "You're working on " + data.file.name + " file."
-          });
+        vm.addFileToProject = function(newFile){
+
+          ProjectService.addFileToProject(vm.project.$id, newFile.newFile);
+          vm.listenToBackendEvent(newFile.newFile.id);
+            vm.refFile.$loaded().then(function(d){
+                vm.revisionsAsArray.$loaded().then(function(data){
+                    newFile.newFile.revision.projectId = vm.project.$id;
+                    vm.sendAceLoadContentEvent({
+                        fileRevision: newFile.newFile.revision
+                    });
+
+                    $location.path("/editor");
+
+                    vm.sendNotifyUserEvent({
+                        file: newFile.newFile,
+                        message: "You're working on " + newFile.newFile.name + " file."
+                    });
+                });
+            });
+
         };
 
     }

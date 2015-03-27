@@ -8,12 +8,12 @@
         vm.asciidoc = {};
         vm.asciidoc.options = Opal.hash2(['safe', 'attributes'], {'safe': 'unsafe', 'attributes': 'showtitle showauthor icons=font@'});
 
-
+        /**
         Storage.load('file').then(function (data) {
            if (data){
             vm.asciidoc.ascii = data.asciidoc;
            }
-        });
+        });*/
 
         /**
          * Define Post processor to change html generated with asciidoc
@@ -34,7 +34,7 @@
         }
 
         $scope.$on('aceChangeEvent', function (event, data) {
-            vm.asciidoc.ascii = data.file.asciidoc;
+            vm.asciidoc.ascii = data.asciidoc;
         });
     }
 

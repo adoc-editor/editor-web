@@ -3,22 +3,34 @@
 
     var module = angular.module('editAdoc.editor.service', []);
 
-    module.service('Editor', [ "ProjectService", "SyncProject", "Storage", function Editor (ProjectService, SyncProject, Storage) {
+    module.service('Editor', ["SyncProject", "Storage", function Editor (SyncProject, Storage) {
         var editor = null
         var onReadyFns = [];
         var changeFoldFns = [];
         var that = this;
 
-        /** file loaded into the editor */
-        that.file =  ProjectService.createSampleRevisionForFile();
+        /** Revision file loaded into the editor
+         *  {
+         *    $id: "-JID5410...."
+         *    asciidoc: "= title 1",
+         *    projectId: "project-XXXXXX",
+         *    fileId: "file-XXX"
+         *    label: "auto"
+         *  }
+         *
+         */
+        that.fileRevision =  null;
 
-        /** The projectId of the edited file **/
-        that.projectId;
-        /** events on the document represented this file */
+        /**
+         * events on the document represented this file
+         *
+         */
         that.docEvents = null;
+        /** the userId connected to the app */
         that.user =  null;
 
-        that.collaborativeActivate = true;
+        /** work with several users on the same revision file ?*/
+        that.isCollaborativeMode = true;
 
 
         function clearAnnotation() {
@@ -52,11 +64,16 @@
             configureSession(session);
         }
 
+        /**
+         * Each time the Document changes by an user action or by the API.
+         *
+         * @param event the event on the Ace Document
+         */
         function onChangeDocument(event) {
             initDocEventsForFile();
             //synchronize event on firebase if the user is connected
-            //and this event is not already into the array
-            if (editor.curOp && editor.curOp.command.name){
+            //and if this event is not send by the server
+            if (editor && editor.curOp && editor.curOp.command.name){
                 //User change
                 console.log("user change (send to firebase)");
                 if (that.user != null){
@@ -65,13 +82,14 @@
                         "event": event
                     }
                     that.docEvents.$add(collEvent);
-
                 }
-
             } else {
                 //API Change
-                console.log("api change, don't fire event to firebase");
-
+                console.log("doc : API change (don't fire event to firebase)");
+            }
+            //keep the local asciidoc up to date
+            if (that.fileRevision) {
+                that.fileRevision.asciidoc = that.getValue();
             }
         }
 
@@ -90,17 +108,17 @@
          * init collaborative events on a file
          * @param file
          */
-        function initDocEventsForFile(file){
-            if(that.collaborativeActivate == true){
-                if (that.projectId && that.file && (that.docEvents == null
-                    || (file && file.$id != that.file.$id)) ){
-                    that.docEvents = SyncProject.syncFileRevisionEventAsArray(that.projectId, that.file.id, that.file.$id);
+        function initDocEventsForFile(newFileRevision){
+            if(that.isCollaborativeMode == true){
+                if (that.fileRevision && (that.docEvents == null
+                    || (newFileRevision && newFileRevision.$id != that.fileRevision.$id)) ){
+                    that.docEvents = SyncProject.syncFileRevisionEventAsArray(that.fileRevision.projectId, that.fileRevision.fileId, that.fileRevision.$id);
                     //watch events to add event from other users
                     that.docEvents.$watch(function(event) {
                         if (editor && that.user != null && that.docEvents.$getRecord(event.key).user != that.user){
                             var events = [that.docEvents.$getRecord(event.key).event.data];
                             editor.getSession().getDocument().applyDeltas(events);
-                            that.file.asciidoc = that.getValue();
+                            console.log("apply delta from firebase");
                         }
                     })
                 }
@@ -111,13 +129,13 @@
          * Load a file from local storage
          * @param file
          */
-        function initFileInEditorFromBrowser(file){
-            setValue(file);
-            initDocEventsForFile(file);
+        function initFileRevisionInEditor(fileRevision){
+            setValue(fileRevision.asciidoc);
+            initDocEventsForFile(fileRevision);
         }
 
         function setProjectId(projectId){
-            that.projectId = projectId;
+            that.fileRevision.projectId = projectId;
         }
 
         /**
@@ -128,32 +146,43 @@
             that.user = userUid;
         }
 
-        function setValue(file) {
+        /**
+         * Attac a file to this editor session
+         * @param file
+         */
+        function attachFileRevision(fileRevision){
+            that.fileRevision = fileRevision;
+            initFileRevisionInEditor(fileRevision);
 
-            that.file = file;
-            that.projectId = file.projectId;
+        }
 
-            if(that.collaborativeActivate == false) {
-                if (angular.isString(file.asciidoc) && editor) {
-                    editor.getSession().setValue(file.asciidoc);
-                    that.file.document = editor.getSession().getDocument().getAllLines();
+        /**
+         * Set a string as a whole document to this editor session.
+         *
+         * @param content the string representing the whole document
+         */
+        function setValue(content) {
+
+          //  if(that.isCollaborativeMode == false) {
+                if (angular.isString(content) && editor) {
+                    editor.getSession().setValue(content);
+                    //that.file.document = editor.getSession().getDocument().getAllLines();
                 }
-            }else{
-                initDocEventsForFile(file);
-            }
-            Storage.save("file", that.file);
+           // }else{
+                //initDocEventsForFile(fileRevision);
+           // }
+            //Storage.save("file", that.file);
         }
 
         function updateAsciidoc() {
-              if(that.collaborativeActivate == false){
-                  that.file.asciidoc = that.getValue();
+              if(that.isCollaborativeMode == false){
+                  that.fileRevision.asciidoc = that.getValue();
                   if (editor) {
-                      that.file.document = editor.getSession().getDocument().getAllLines();
+                      that.fileRevision.document = editor.getSession().getDocument().getAllLines();
                   }
               }
-              Storage.save("file", that.file);
+              //Storage.save("file", that.file);
         }
-
 
         function getFile() {
             return that.file;
@@ -220,6 +249,7 @@
         }
 
         this.getValue = getValue;
+        this.attachFileRevision = attachFileRevision;
         this.updateAsciidoc = updateAsciidoc;
         this.getFile = getFile;
         this.setValue = setValue;
@@ -235,7 +265,7 @@
         this.gotoLine = gotoLine;
         this.lineInFocus = lineInFocus;
         this.setprojectId = setProjectId;
-        this.initFileInEditorFromBrowser = initFileInEditorFromBrowser;
+        this.initFileRevisionInEditor = initFileRevisionInEditor;
         this.setUser = setUser;
     }]);
 
