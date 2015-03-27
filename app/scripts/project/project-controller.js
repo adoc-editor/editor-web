@@ -15,8 +15,12 @@
 
         /** Current edited file */
         vm.refFile;
-        vm.unwatchRefFile;
+
+
+        /** handle revision for the file **/
         vm.revisionsAsArray;
+        vm.refFileRevision;
+        vm.unwatchRefFileRevision;
 
       /**
          * Close this sidebar
@@ -31,15 +35,7 @@
        */
       vm.listenToBackendEvent = function(idFile){
         vm.refFile = SyncProject.syncFileAsObject(vm.project.$id, idFile);
-
-        vm.unwatchRefFile = vm.refFile.$watch(function(data){
-          //TODO : define a workflow between users
-          //console.log("file changed!");
-        });
-
         vm.revisionsAsArray = SyncProject.syncFileRevisionsAsArray(vm.project.$id, idFile);
-
-
       };
 
       /**
@@ -71,6 +67,8 @@
               vm.project.files[data.file.id] = {};
             }
             vm.revisionsAsArray[0].asciidoc = data.file.asciidoc;
+            //vm.revisionsAsArray[0].document = data.file.document;
+            // infinite loop if three way binding !!
             //if no three way binding, then $save
             vm.revisionsAsArray.$save(0);
           }
@@ -82,7 +80,7 @@
          */
         vm.sendAceLoadContentEvent = function(data){
           //broadcast event for preview
-          if ($location.path() != "editor"){
+          if ($location.path() != "/editor"){
             Editor.setValue(data.file);
             Editor.updateAsciidoc();
           } else {
@@ -141,6 +139,7 @@
           vm.revisionsAsArray.$loaded().then(function(data){
             var tmpFile = data[0];
             tmpFile.id = idFile;
+            tmpFile.projectId = vm.project.$id;
             vm.sendAceLoadContentEvent({
               file: tmpFile
             });
@@ -164,6 +163,7 @@
           var projectId = vm.project.$id;
           ProjectService.addFileToProject(projectId, data.file);
           vm.listenToBackendEvent(data.file.id);
+          data.file.projectId = projectId;
           vm.sendAceLoadContentEvent(data);
           $location.path("/editor");
           vm.sendNotifyUserEvent({

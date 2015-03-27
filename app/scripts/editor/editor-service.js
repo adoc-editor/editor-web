@@ -3,14 +3,22 @@
 
     var module = angular.module('editAdoc.editor.service', []);
 
-    module.service('Editor', [ "ProjectService", "Storage", function Editor (ProjectService, Storage) {
+    module.service('Editor', [ "ProjectService", "SyncProject", "Storage", function Editor (ProjectService, SyncProject, Storage) {
         var editor = null
         var onReadyFns = [];
         var changeFoldFns = [];
         var that = this;
 
-        /** file loaded to the editor */
+        /** file loaded into the editor */
         that.file =  ProjectService.createSampleRevisionForFile();
+
+        /** The projectId of the edited file **/
+        that.projectId;
+        /** events on the document represented this file */
+        that.docEvents = null;
+        that.user =  null;
+
+        that.collaborativeActivate = true;
 
 
         function clearAnnotation() {
@@ -39,8 +47,32 @@
 
             // Hookup changeFold listeners
             session.on('changeFold', onChangeFold);
+            session.on('change', onChangeDocument);
 
             configureSession(session);
+        }
+
+        function onChangeDocument(event) {
+            initDocEventsForFile();
+            //synchronize event on firebase if the user is connected
+            //and this event is not already into the array
+            if (editor.curOp && editor.curOp.command.name){
+                //User change
+                console.log("user change (send to firebase)");
+                if (that.user != null){
+                    var collEvent = {
+                        "user": that.user,
+                        "event": event
+                    }
+                    that.docEvents.$add(collEvent);
+
+                }
+
+            } else {
+                //API Change
+                console.log("api change, don't fire event to firebase");
+
+            }
         }
 
         function onChangeFold() {
@@ -54,18 +86,74 @@
             session.setTabSize(2);
         }
 
-        function setValue(file) {
-            that.file = file;
-            if (angular.isString(file.asciidoc) && editor) {
-                editor.getSession().setValue(file.asciidoc);
+        /**
+         * init collaborative events on a file
+         * @param file
+         */
+        function initDocEventsForFile(file){
+            if(that.collaborativeActivate == true){
+                if (that.projectId && that.file && (that.docEvents == null
+                    || (file && file.$id != that.file.$id)) ){
+                    that.docEvents = SyncProject.syncFileRevisionEventAsArray(that.projectId, that.file.id, that.file.$id);
+                    //watch events to add event from other users
+                    that.docEvents.$watch(function(event) {
+                        if (editor && that.user != null && that.docEvents.$getRecord(event.key).user != that.user){
+                            var events = [that.docEvents.$getRecord(event.key).event.data];
+                            editor.getSession().getDocument().applyDeltas(events);
+                            that.file.asciidoc = that.getValue();
+                        }
+                    })
+                }
             }
-          Storage.save("file", that.file);
         }
 
-      function updateAsciidoc() {
-        that.file.asciidoc = that.getValue();
-        Storage.save("file", that.file);
-      }
+        /**
+         * Load a file from local storage
+         * @param file
+         */
+        function initFileInEditorFromBrowser(file){
+            setValue(file);
+            initDocEventsForFile(file);
+        }
+
+        function setProjectId(projectId){
+            that.projectId = projectId;
+        }
+
+        /**
+         * Set the UID from the connected user
+         * @param userUid
+         */
+        function setUser(userUid){
+            that.user = userUid;
+        }
+
+        function setValue(file) {
+
+            that.file = file;
+            that.projectId = file.projectId;
+
+            if(that.collaborativeActivate == false) {
+                if (angular.isString(file.asciidoc) && editor) {
+                    editor.getSession().setValue(file.asciidoc);
+                    that.file.document = editor.getSession().getDocument().getAllLines();
+                }
+            }else{
+                initDocEventsForFile(file);
+            }
+            Storage.save("file", that.file);
+        }
+
+        function updateAsciidoc() {
+              if(that.collaborativeActivate == false){
+                  that.file.asciidoc = that.getValue();
+                  if (editor) {
+                      that.file.document = editor.getSession().getDocument().getAllLines();
+                  }
+              }
+              Storage.save("file", that.file);
+        }
+
 
         function getFile() {
             return that.file;
@@ -146,6 +234,9 @@
         this.removeFold = removeFold;
         this.gotoLine = gotoLine;
         this.lineInFocus = lineInFocus;
+        this.setprojectId = setProjectId;
+        this.initFileInEditorFromBrowser = initFileInEditorFromBrowser;
+        this.setUser = setUser;
     }]);
 
 

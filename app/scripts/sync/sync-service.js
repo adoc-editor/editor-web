@@ -34,12 +34,19 @@
     var syncFile = function(projectId, fileId) {
         return (ref.child(projectId).child("files").child(fileId));
     }
-      var syncFileRevisions = function(projectId, fileId) {
-          return (ref.child(projectId).child("files").child(fileId).child("revisions"));
-      }
-      var syncFileRevisionsAsArray = function(projectId, fileId) {
-          return $firebaseArray(ref.child(projectId).child("files").child(fileId).child("revisions"));
-      }
+    var syncFileRevisions = function(projectId, fileId) {
+        return (ref.child(projectId).child("files").child(fileId).child("revisions"));
+    }
+    var syncFileRevisionsAsArray = function(projectId, fileId) {
+        return $firebaseArray(ref.child(projectId).child("files").child(fileId).child("revisions"));
+    }
+    var syncFileRevisionAsObject = function(projectId, fileId, revisionId) {
+        return $firebaseObject(ref.child(projectId).child("files").child(fileId).child("revisions").child(revisionId));
+    }
+
+    var syncFileRevisionEventAsArray = function(projectId, fileId, revisionId) {
+        return $firebaseArray(ref.child(projectId).child("files").child(fileId).child("events").child("revision:"+revisionId));
+    }
 
     var sync = function() {
       return ref;
@@ -52,6 +59,8 @@
       syncFile: syncFile,
       syncFileRevisions: syncFileRevisions,
       syncFileRevisionsAsArray: syncFileRevisionsAsArray,
+      syncFileRevisionAsObject: syncFileRevisionAsObject,
+      syncFileRevisionEventAsArray: syncFileRevisionEventAsArray,
       sync: sync
     }
   }]);
