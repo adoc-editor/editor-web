@@ -30,11 +30,14 @@
                     $anchorScroll();
                 });
             });
+
             return element;
-        }
+        };
 
         $scope.$on('aceChangeEvent', function (event, data) {
-            vm.asciidoc.ascii = data.fileRevision.asciidoc;
+            if (data.fileRevision){
+                vm.asciidoc.ascii = data.fileRevision.asciidoc;
+            }
         });
     }
 

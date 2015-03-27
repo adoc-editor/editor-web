@@ -55,24 +55,6 @@
         });
 
         /**
-         * @name aceChangeEvent
-         * @desc subscribe to the aceChangeEvent in order to have save the content on change.
-         */
-        $scope.$on('aceChangeEvent', function (event, data) {
-            /*
-          if(vm.project !== undefined && vm.project.files !== undefined){
-            if (vm.project.files[data.file.id] === undefined){
-              vm.project.files[data.file.id] = {};
-            }
-            vm.revisionsAsArray[0].asciidoc = data.file.asciidoc;
-            //vm.revisionsAsArray[0].document = data.file.document;
-            // infinite loop if three way binding !!
-            //if no three way binding, then $save
-            vm.revisionsAsArray.$save(0);
-          }*/
-        });
-
-        /**
          * Send an event to load a file into the editor
          * @param data
          */
@@ -80,7 +62,6 @@
 
           if ($location.path() == "/editor"){
               Editor.attachFileRevision(data.fileRevision);
-            //Editor.updateAsciidoc();
           }
           //broadcast event for preview
           else {

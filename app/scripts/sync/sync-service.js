@@ -43,6 +43,9 @@
     var syncFileRevisionAsObject = function(projectId, fileId, revisionId) {
         return $firebaseObject(ref.child(projectId).child("files").child(fileId).child("revisions").child(revisionId));
     }
+      var syncFileRevisionAsciidocAsObject = function(projectId, fileId, revisionId) {
+          return $firebaseObject(ref.child(projectId).child("files").child(fileId).child("revisions").child(revisionId).child("asciidoc"));
+      }
 
     var syncFileRevisionEventAsArray = function(projectId, fileId, revisionId) {
         return $firebaseArray(ref.child(projectId).child("files").child(fileId).child("events").child("revision:"+revisionId));
@@ -60,6 +63,7 @@
       syncFileRevisions: syncFileRevisions,
       syncFileRevisionsAsArray: syncFileRevisionsAsArray,
       syncFileRevisionAsObject: syncFileRevisionAsObject,
+      syncFileRevisionAsciidocAsObject: syncFileRevisionAsciidocAsObject,
       syncFileRevisionEventAsArray: syncFileRevisionEventAsArray,
       sync: sync
     }

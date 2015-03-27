@@ -125,14 +125,18 @@
                 if (that.fileRevision && (that.docEvents == null
                     || (newFileRevision && newFileRevision.$id != that.fileRevision.$id)) ){
                     that.docEvents = SyncProject.syncFileRevisionEventAsArray(that.fileRevision.projectId, that.fileRevision.fileId, that.fileRevision.$id);
-                    //watch events to add event from other users
-                    that.docEvents.$watch(function(event) {
-                        if (editor && that.user != null && that.docEvents.$getRecord(event.key).user != that.user){
-                            var events = [that.docEvents.$getRecord(event.key).event.data];
-                            editor.getSession().getDocument().applyDeltas(events);
-                            //console.log("apply delta from firebase");
-                        }
-                    })
+                    if (that.docEvents){
+                        that.docEvents.$loaded().then(function(data){
+                            //watch events to add event from other users
+                            that.docEvents.$watch(function(event) {
+                                if (editor && that.user != null && that.docEvents.$getRecord(event.key) && that.docEvents.$getRecord(event.key).user != that.user){
+                                    var events = [that.docEvents.$getRecord(event.key).event.data];
+                                    editor.getSession().getDocument().applyDeltas(events);
+                                    //console.log("apply delta from firebase");
+                                }
+                            })
+                        })
+                    }
                 }
             }
         }
@@ -164,10 +168,15 @@
          * @param file
          */
         function attachFileRevision(fileRevision){
-            that.fileRevision = fileRevision;
-            that.syncFileRevision = SyncProject.syncFileRevisionAsObject(that.fileRevision.projectId, that.fileRevision.fileId, that.fileRevision.$id);
-            initFileRevisionInEditor(fileRevision);
+            that.docEvents = null;
 
+            if(fileRevision && fileRevision.projectId && fileRevision.fileId && fileRevision.$id) {
+                that.fileRevision = fileRevision;
+                that.syncFileRevision = SyncProject.syncFileRevisionAsObject(that.fileRevision.projectId, that.fileRevision.fileId, that.fileRevision.$id);
+                initFileRevisionInEditor(fileRevision);
+            } else {
+                console.log("[WARN] file revision not attached.")
+            }
         }
 
         /**
