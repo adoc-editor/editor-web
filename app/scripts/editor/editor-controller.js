@@ -18,9 +18,9 @@
             if($rootScope.user) {
                 Editor.setUser($rootScope.user.auth.uid);
             }
-            Storage.load('file').then(function (data) {
+            Storage.load('fileRevision').then(function (data) {
               if (data){
-                //Editor.initFileInEditorFromBrowser(data);
+                  Editor.attachFileRevision(data);
               }
               //Editor.updateAsciidoc();
             });
@@ -33,8 +33,6 @@
             if($rootScope.user) {
                 Editor.setUser($rootScope.user.auth.uid);
             }
-
-            //Storage.save('asciidoc', value);
 
             //broadcast event for preview
             $rootScope.$broadcast('aceChangeEvent', {

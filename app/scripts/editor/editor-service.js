@@ -21,6 +21,8 @@
          */
         that.fileRevision =  null;
 
+        that.syncFileRevision = null;
+
         /**
          * events on the document represented this file
          *
@@ -71,11 +73,24 @@
          */
         function onChangeDocument(event) {
             initDocEventsForFile();
+            //keep the local asciidoc up to date
+            if (that.fileRevision) {
+                that.fileRevision.asciidoc = that.getValue();
+                that.syncFileRevision.$loaded().then(
+                    function(data){
+                        that.syncFileRevision.asciidoc = that.getValue();
+                        that.syncFileRevision.$save();
+                        Storage.save("fileRevision", that.fileRevision);
+                        //console.log("update asciidoc on firebase");
+                    }
+                );
+            }
+
             //synchronize event on firebase if the user is connected
             //and if this event is not send by the server
             if (editor && editor.curOp && editor.curOp.command.name){
                 //User change
-                console.log("user change (send to firebase)");
+                //console.log("user change (send to firebase)");
                 if (that.user != null){
                     var collEvent = {
                         "user": that.user,
@@ -85,12 +100,9 @@
                 }
             } else {
                 //API Change
-                console.log("doc : API change (don't fire event to firebase)");
+                //console.log("doc : API change (don't fire event to firebase)");
             }
-            //keep the local asciidoc up to date
-            if (that.fileRevision) {
-                that.fileRevision.asciidoc = that.getValue();
-            }
+
         }
 
         function onChangeFold() {
@@ -118,7 +130,7 @@
                         if (editor && that.user != null && that.docEvents.$getRecord(event.key).user != that.user){
                             var events = [that.docEvents.$getRecord(event.key).event.data];
                             editor.getSession().getDocument().applyDeltas(events);
-                            console.log("apply delta from firebase");
+                            //console.log("apply delta from firebase");
                         }
                     })
                 }
@@ -130,8 +142,9 @@
          * @param file
          */
         function initFileRevisionInEditor(fileRevision){
-            setValue(fileRevision.asciidoc);
+             setValue(fileRevision.asciidoc);
             initDocEventsForFile(fileRevision);
+
         }
 
         function setProjectId(projectId){
@@ -152,6 +165,7 @@
          */
         function attachFileRevision(fileRevision){
             that.fileRevision = fileRevision;
+            that.syncFileRevision = SyncProject.syncFileRevisionAsObject(that.fileRevision.projectId, that.fileRevision.fileId, that.fileRevision.$id);
             initFileRevisionInEditor(fileRevision);
 
         }
@@ -185,7 +199,7 @@
         }
 
         function getFile() {
-            return that.file;
+            return that.fileRevision;
         }
 
         function getValue() {
