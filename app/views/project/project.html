@@ -27,9 +27,12 @@
           <md-item-content>
             <div class="md-tile-content">
               <form style="padding: 1px;margin:1px" ng-submit="pCtrl.newProject()">
-                <div class="row">
-                  <md-text-float label="Create a new project"  ng-model="pCtrl.theProject.name"></md-text-float>
-                </div>
+                  <div layout layout-sm="column">
+                      <md-input-container flex>
+                          <label>Create a new project</label>
+                          <input ng-model="pCtrl.theProject.name">
+                      </md-input-container>
+                  </div>
               </form>
                 <select ng-model="pCtrl.loadedProject" ng-options="value.name for (id , value) in user.projects" ng-change="pCtrl.loadProject()">
                 <option value="">--- Load a Project ---</option>
@@ -46,8 +49,11 @@
             <md-item-content>
               <div class="md-tile-content">
                 <form style="padding: 1px;"  ng-show="pCtrl.project" ng-submit="pCtrl.newBlankFile()">
-                  <div class="row">
-                    <md-text-float label="Create a new file"  ng-model="pCtrl.theNewFile.name"  ></md-text-float>
+                    <div layout layout-sm="column">
+                      <md-input-container flex>
+                          <label>Create a new file</label>
+                          <input ng-model="pCtrl.theNewFile.name">
+                      </md-input-container>
                   </div>
                 </form>
                 <ul class="md-toolbar" >
@@ -58,7 +64,7 @@
                       </md-tooltip>
                       <md-icon  icon="images/md-icons/file/svg/ic_cloud_upload_24px.svg" ></md-icon>
                     </md-button>
-                    <md-button title="Edit" ng-click="pCtrl.editFile(f.id)" class="md-button-fab" aria-label="Edit" style="width: 30px; height: 30px;">
+                    <md-button title="Edit" ng-click="pCtrl.editFile(f.id)" class="md-button-fab" aria-label="Edit" >
                       <md-tooltip>
                         Edit
                       </md-tooltip>
