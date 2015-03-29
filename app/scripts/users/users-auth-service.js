@@ -6,7 +6,7 @@
    /**
    * User Authentification with a provider (github, twitter...) by Firebase
    */
-    module.service('UsersAuthService',["SyncAuth", "$q", function(SyncAuth, $q) {
+    module.service('UsersAuthService',["SyncAuth", "$q", "UsersPresence", function(SyncAuth, $q, UsersPresence) {
 
         function auth(provider) {
             var deferred = $q.defer();
@@ -17,6 +17,7 @@
               scope: "user,repo"
                 }).then(function(authData) {
                   deferred.resolve(authData);
+                  UsersPresence.setUserConnectionAsAuthenticated(authData);
                 }).catch(function(error) {
                    deferred.reject(error)
                 }

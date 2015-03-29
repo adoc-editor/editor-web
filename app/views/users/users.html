@@ -1,31 +1,31 @@
-<div ng-controller="UsersCtrl as users">
+<div ng-controller="UsersCtrl as userCtrl">
     <md-toolbar class="md-theme-red" >
         <h1 class="md-toolbar-tools" style="color:white;">Users
 
-            <md-button aria-label="Close" class="md-button-fab" ng-click="users.close()">
+            <md-button aria-label="Close" class="md-button-fab" ng-click="userCtrl.close()">
                 <md-icon icon="images/md-icons/navigation/svg/ic_close_24px.svg">
                 </md-icon>
             </md-button>
         </h1>
     </md-toolbar>
     <md-content class="md-content-padding" style="height: 600px;" flex layout-fill>
-        <div>
-            <div ng-show="user">
-                <p>Hello, {{user.github.displayName}}</p>
-            </div>
-        </div>
+
         <section>
-            <md-subheader class="md-primary">Authors</md-subheader>
+            <md-subheader class="md-primary"></md-subheader>
             <md-list>
-                <md-item ng-repeat="author in users.authors">
+                <md-item ng-repeat="user in userCtrl.listUsers">
                     <md-item-content>
                         <div class="md-tile-left">
                         </div>
                         <div class="md-tile-content">
-                            <h4>{{author.github.username}}</h4>
-                            <p>
-                                {{author.github.email}}
-                            </p>
+                            <h4>{{user.username}}</h4>
+                            <md-chips readonly="true">
+                                <md-chip ng-show="user.isOnline === true"><strong>ONLINE</strong></md-chip>
+                                <md-chip ng-show="user.isOnline === false"><strong>OFFLINE</strong></md-chip>
+
+                            </md-chips>
+                            <p ng-show="user.isOnline === false">Last connection : {{user.lastOnline | date:'short'}}</p>
+
                         </div>
                     </md-item-content>
                 </md-item>

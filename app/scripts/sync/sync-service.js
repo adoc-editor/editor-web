@@ -115,4 +115,40 @@
       sync: sync
     }
   }]);
+
+    module.factory("SyncUsersPresence", ["FBURL", "$firebaseObject", function(FBURL, $firebaseArray){
+        var ref = new Firebase(FBURL+"/presence/");
+
+        var sync = function() {
+            return ref;
+        }
+
+        var syncUsersPresenceAsArray = function(){
+            return $firebaseArray(ref);
+        }
+
+        var syncUserConnections = function(userid) {
+            return (ref.child(userid).child("connections"));
+        }
+
+        var syncUser = function(userid) {
+            return (ref.child(userid));
+        }
+
+        var syncUserLastOnline = function(userid) {
+            return (ref.child(userid).child("lastOnline"));
+        }
+        var syncUserIsOnline = function(userid) {
+            return (ref.child(userid).child("isOnline"));
+        }
+
+        return {
+            sync: sync,
+            syncUserConnections: syncUserConnections,
+            syncUserLastOnline: syncUserLastOnline,
+            syncUserIsOnline: syncUserIsOnline,
+            syncUser: syncUser,
+            syncUsersPresenceAsArray: syncUsersPresenceAsArray
+        }
+    }]);
 })();

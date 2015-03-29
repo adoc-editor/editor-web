@@ -19,6 +19,7 @@ var EditAdocApp = angular.module('editAdoc', [
   'editAdoc.users.controller',
   'editAdoc.users.service',
   'editAdoc.users.auth.service',
+  'editAdoc.users.presence',
 
   'editAdoc.project.controller',
   'editAdoc.project.github.controller',
@@ -40,7 +41,6 @@ EditAdocApp.controller('AppCtrl', function($rootScope, $scope, $mdSidenav, $mdTo
 
    //Datas into rootScope
    $rootScope.notifyUserMessage = {};
-   $rootScope.authData = {};
    $rootScope.commitMessage = ""; //TODO delete from $rootScope
 
     vm.toastPosition = {
