@@ -1,35 +1,53 @@
 <div ng-controller="UsersCtrl as userCtrl">
-    <md-toolbar class="md-theme-red" >
+    <md-toolbar class="md-theme" >
         <h1 class="md-toolbar-tools" style="color:white;">Users
 
             <md-button aria-label="Close" class="md-button-fab" ng-click="userCtrl.close()">
-                <md-icon icon="images/md-icons/navigation/svg/ic_close_24px.svg">
+                <md-icon md-svg-icon="action:ic_highlight_remove_24px">
                 </md-icon>
             </md-button>
         </h1>
     </md-toolbar>
-    <md-content class="md-content-padding" style="height: 600px;" flex layout-fill>
+    <md-content>
+        <md-list>
+            <md-item ng-repeat="user in userCtrl.listUsers">
+                <md-item-content>
+                    <div class="md-tile-left">
+                        <img ng-src="{{user.avatar}}" class="avatar" alt="{{user.username}}">
+                    </div>
+                    <div class="md-tile-content">
+                        <h3>{{user.username}}</h3>
+                        <md-button ng-show="user.isOnline === true" class="md-warn md-raised ">ONLINE</md-button>
+                        <md-button ng-disabled="true" ng-show="user.isOnline === false" class="md-warn md-raised md-hue-2">OFFLINE</md-button>
 
-        <section>
-            <md-subheader class="md-primary"></md-subheader>
-            <md-list>
-                <md-item ng-repeat="user in userCtrl.listUsers">
-                    <md-item-content>
-                        <div class="md-tile-left">
-                        </div>
-                        <div class="md-tile-content">
-                            <h4>{{user.username}}</h4>
-                            <md-chips readonly="true">
-                                <md-chip ng-show="user.isOnline === true"><strong>ONLINE</strong></md-chip>
-                                <md-chip ng-show="user.isOnline === false"><strong>OFFLINE</strong></md-chip>
 
-                            </md-chips>
-                            <p ng-show="user.isOnline === false">Last connection : {{user.lastOnline | date:'short'}}</p>
-
-                        </div>
-                    </md-item-content>
-                </md-item>
-            </md-list>
-            </section>
+                        <p ng-show="user.isOnline === false">
+                            Last connection : {{user.lastOnline | date:'short'}}
+                        </p>
+                    </div>
+                </md-item-content>
+                <md-divider ng-if="!$last"></md-divider>
+            </md-item>
+        </md-list>
     </md-content>
+
+
+        <md-list ng-show="false">
+            <md-item ng-repeat="user in userCtrl.listUsers">
+
+                    <md-button ng-click="" >
+                        <img src="{{user.avatar}}" class="avatar"/>
+                        {{user.username}}
+                        <span ng-show="user.isOnline === true">ONLINE</span>
+                        <span ng-show="user.isOnline === false">OFFLINE</span>
+                        <p ng-show="user.isOnline === false">
+                            Last connection : {{user.lastOnline | date:'short'}}
+                        </p>
+                    </md-button>
+                    <md-divider ng-if="!$last"></md-divider>
+
+            </md-item>
+        </md-list>
+
+
 </div>

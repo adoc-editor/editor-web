@@ -11,6 +11,16 @@
     function UserProfileCtrl(UsersAuthService) {
       var vm = this;
 
+        vm.tabs = {
+            selectedIndex : 0
+        };
+        vm.next = function() {
+            vm.tabs.selectedIndex = Math.min(vm.tabs.selectedIndex + 1, 1) ;
+        };
+        vm.previous = function() {
+            vm.tabs.selectedIndex = Math.max(vm.tabs.selectedIndex - 1, 0);
+        };
+
       vm.logout = function() {
         UsersAuthService.logout();
       };

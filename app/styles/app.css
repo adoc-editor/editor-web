@@ -1,5 +1,42 @@
 .ace_editor { height: 800px; }
 
+h1, h2, h3, h4, h5 {
+  color: #0d3349;!important;
+}
+
+
+
+/* Sidenav area */
+
+md-list .md-button {
+  color: inherit;
+  font-weight: 500;
+  text-align: left;
+  width: 100%;
+}
+md-list .md-button.selected {
+  color: #03a9f4;
+}
+
+.avatar {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border: 1px solid #ddd;
+  border-radius: 50%;
+  display: inline-block;
+  overflow: hidden;
+  margin: 0px;
+  vertical-align: middle;
+  zoom:0.70;
+  transform: translateZ(0);
+  -webkit-transform: scale(0.70);
+  -moz-transform:scale(0.70);
+}
+
+
+
+
 .dialogdemoBasicUsage .full {
   width: 100%;
   height: 100%; }

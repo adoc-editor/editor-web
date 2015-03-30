@@ -2,23 +2,27 @@
     <md-toolbar >
         <h1 class="md-toolbar-tools" style="color:white;">Projects
             <md-button aria-label="Close" class="md-button-fab" ng-click="pCtrl.close()">
-                <md-icon icon="images/md-icons/navigation/svg/ic_close_24px.svg">
+                <md-icon md-svg-icon="action:ic_highlight_remove_24px">
                 </md-icon>
             </md-button>
         </h1>
     </md-toolbar>
 
-   <md-content ng-hide="user.auth.uid">
-     <md-item><md-item-content>
-       <div class="md-tile-content">
-     <p>You need to <strong>be logged in</strong> in order to Create Project and work on AsciDoc files.</p>
-       <md-button aria-label="Authentification with Github" class="md-button-fab" ng-controller="UsersLoginCtrl as login"  ng-click="login.authentification('github')">
-         <md-icon icon="images/github-circle.svg">
-         </md-icon> <span>Auth with GitHub</span>
-       </md-button>
-         </div>
-    </md-item-content></md-item>
-   </md-content>
+    <md-content class="md-padding" ng-hide="user">
+        <p>You need <b>to be logged with Github</b> in order to view your profile.</p>
+        <md-item ><md-item-content>
+            <div class="md-tile-content">
+                <md-button aria-label="Authentification with Github" class="md-fab" ng-controller="UsersLoginCtrl as login"  ng-click="login.authentification('github')">
+                    <md-icon md-svg-icon="images/github-circle.svg" title="">
+                    </md-icon>
+                    <md-tooltip>
+                        Sign-in with your GitHub Account
+                    </md-tooltip>
+                </md-button>
+            </div>
+        </md-item-content>
+        </md-item>
+    </md-content>
 
   <md-content ng-show="user.auth.uid" class="" style="" flex layout-fill>
     <section>
