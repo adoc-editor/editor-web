@@ -20,9 +20,18 @@
             }
             Storage.load('fileRevision').then(function (data) {
               if (data){
-                  Editor.attachFileRevision(data);
+                  //Check if there is already a file attach to the editor
+                  if (!Editor.hasAlreadyFileRevisionAttached()){
+                      //attach a file revision only if this file is associated to
+                      // a project and a file
+                      if (data.fileId && data.projectId){
+                          Editor.attachFileRevision(data);
+                      }
+                  } else {
+                      //a file revision is attached, load this asciidoc content
+                      Editor.loadAsciidocFromAttachedFileRevision();
+                  }
               }
-              //Editor.updateAsciidoc();
             });
         });
 

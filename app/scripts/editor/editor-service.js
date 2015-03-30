@@ -48,7 +48,9 @@
 
             // Set editor options
             editor.setOptions({
-                enableSnippets: true
+                enableSnippets: true,
+                showPrintMargin: true,
+                showGutter: true
             });
 
             // Editor is ready, fire the on-ready function and flush the queue
@@ -72,6 +74,7 @@
          * @param event the event on the Ace Document
          */
         function onChangeDocument(event) {
+
             initDocEventsForFile();
             //keep the local asciidoc up to date
             if (that.fileRevision) {
@@ -79,9 +82,19 @@
                 that.syncFileRevision.$loaded().then(
                     function(data){
                         that.syncFileRevision.asciidoc = that.getValue();
-                        that.syncFileRevision.$save();
-                        Storage.save("fileRevision", that.fileRevision);
-                        //console.log("update asciidoc on firebase");
+                        if (that.syncFileRevision.fileId && that.syncFileRevision.projectId){
+                            that.syncFileRevision.$save().then(function(data){
+                                var fileRevToStore = {
+                                    $id : that.syncFileRevision.$id,
+                                    asciidoc : that.syncFileRevision.asciidoc,
+                                    fileId: that.syncFileRevision.fileId,
+                                    projectId: that.syncFileRevision.projectId
+                                }
+                                Storage.save("fileRevision", fileRevToStore);
+                                //console.log("update asciidoc on firebase");
+                            });
+
+                        }
                     }
                 );
             }
@@ -101,6 +114,15 @@
             } else {
                 //API Change
                 //console.log("doc : API change (don't fire event to firebase)");
+                if (editor){
+                    /*
+                    editor.getSession().setAnnotations([{
+                        row: event.data.range.start.row,
+                        column: event.data.range.end.column,
+                        text: "an other user is typing...",
+                        type: "warning" // also warning and information
+                    }]);*/
+                }
             }
 
         }
@@ -114,6 +136,8 @@
 
         function configureSession(session) {
             session.setTabSize(2);
+
+
         }
 
         /**
@@ -197,14 +221,16 @@
             //Storage.save("file", that.file);
         }
 
-        function updateAsciidoc() {
-              if(that.isCollaborativeMode == false){
-                  that.fileRevision.asciidoc = that.getValue();
-                  if (editor) {
-                      that.fileRevision.document = editor.getSession().getDocument().getAllLines();
-                  }
-              }
-              //Storage.save("file", that.file);
+        function hasAlreadyFileRevisionAttached(){
+            if(that.fileRevision && that.fileRevision.fileId && that.fileRevision.projectId){
+                return true;
+            } else{
+                return false;
+            }
+        }
+
+        function loadAsciidocFromAttachedFileRevision() {
+              setValue(that.fileRevision.asciidoc);
         }
 
         function getFile() {
@@ -273,7 +299,6 @@
 
         this.getValue = getValue;
         this.attachFileRevision = attachFileRevision;
-        this.updateAsciidoc = updateAsciidoc;
         this.getFile = getFile;
         this.setValue = setValue;
         this.aceLoaded = aceLoaded;
@@ -290,6 +315,8 @@
         this.setprojectId = setProjectId;
         this.initFileRevisionInEditor = initFileRevisionInEditor;
         this.setUser = setUser;
+        this.hasAlreadyFileRevisionAttached = hasAlreadyFileRevisionAttached;
+        this.loadAsciidocFromAttachedFileRevision = loadAsciidocFromAttachedFileRevision;
     }]);
 
 
