@@ -406,7 +406,7 @@ module.exports = function (grunt) {
     'cdnify',
     'cssmin',
     'svgmin',
-    'uglify',
+    //'uglify',
     'filerev',
     'usemin',
     'htmlmin',
