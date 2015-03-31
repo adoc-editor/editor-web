@@ -52,11 +52,12 @@
             </md-tooltip>
             <md-icon md-svg-icon="file:ic_folder_24px" alt="Projects">
             </md-icon>
+
         </md-button>
         <!-- auth -->
-        <md-button aria-label="Authentification with Github" ng-hide="user.auth.github" class="md-button-fab" ng-controller="UsersLoginCtrl as login"  ng-click="login.authentification('github')">
+        <md-button aria-label="Authenticate with Github" ng-hide="user.auth.github" class="md-button-fab" ng-controller="UsersLoginCtrl as login"  ng-click="login.authentification('github')">
             <md-tooltip>
-                Authentification with GitHub
+                Authenticate with GitHub
             </md-tooltip>
             <md-icon md-svg-icon="images/github-circle.svg">
             </md-icon>
@@ -71,3 +72,4 @@
         </md-button>
     </h1>
 </md-toolbar>
+

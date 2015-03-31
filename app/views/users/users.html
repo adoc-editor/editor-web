@@ -17,8 +17,8 @@
                     </div>
                     <div class="md-tile-content">
                         <h3>{{user.username}}</h3>
-                        <md-button ng-show="user.isOnline === true" class="md-warn md-raised ">ONLINE</md-button>
-                        <md-button ng-disabled="true" ng-show="user.isOnline === false" class="md-warn md-raised md-hue-2">OFFLINE</md-button>
+                        <md-button ng-show="user.isOnline === true" class="md-primary md-hue2 ">ONLINE</md-button>
+                        <md-button ng-disabled="true" ng-show="user.isOnline === false" class="md-primary ">OFFLINE</md-button>
 
 
                         <p ng-show="user.isOnline === false">

@@ -47,16 +47,42 @@
         </md-list>
       </section>
       <md-divider></md-divider>
-      <section ng-model="pCtrl.project">
+      <!-- Selected Project -->
+      <section ng-model="pCtrl.project" ng-show="pCtrl.project">
+          <md-toolbar class="md-primary md-shade-2" style="background-color: #aed581">
 
-          <md-toolbar class="md-warn">
-              <div class="md-toolbar-tools">
-                  <h4>{{pCtrl.project.name}}</h4>
+              <div class="md-toolbar-tools md-shade-2">
+                  <h4><md-icon md-svg-icon="file:ic_folder_open_24px"  >
+                  </md-icon> {{pCtrl.project.name}}</h4>
               </div>
           </md-toolbar>
-          <md-item >
+          <md-item ng-hide="pCtrl.isProjectLoaded">
+              <md-item-content>
+                    <md-progress-circular class="md-accent " md-mode="indeterminate" ></md-progress-circular>
+              </md-item-content>
+           </md-item>
+          <!-- files list -->
+          <md-item ng-show="pCtrl.isProjectLoaded">
             <md-item-content>
               <div class="md-tile-content">
+                  <md-button title="Project information" class="md-button-fab" aria-label="Project information" >
+                      <md-tooltip>
+                          Project information
+                      </md-tooltip>
+                      <md-icon  md-svg-icon="action:ic_info_24px" style="color:#aed581" ></md-icon>
+                  </md-button>
+                  <md-button title="Invite an user" class="md-button-fab" aria-label="Invite an user" >
+                      <md-tooltip>
+                          Invite an user to this project
+                      </md-tooltip>
+                      <md-icon  md-svg-icon="social:ic_person_add_24px" style="color:#aed581" ></md-icon>
+                  </md-button>
+                  <md-button title="Number of users" class="md-button-fab" aria-label="Number of users" >
+                      <md-tooltip>
+                          Number of users
+                      </md-tooltip>
+                      <md-icon  md-svg-icon="image:ic_looks_3_24px" style="color:#aed581" ></md-icon>
+                  </md-button>
                 <form style="padding: 1px;"  ng-show="pCtrl.project" ng-submit="pCtrl.newBlankFile()">
                     <div layout layout-sm="column">
                       <md-input-container flex>
@@ -65,8 +91,11 @@
                       </md-input-container>
                   </div>
                 </form>
-                <ul class="md-toolbar" >
-                  <li ng-repeat="f in pCtrl.project.files">
+
+
+
+                  <ul style="margin-left: 0" >
+                    <li style="list-style: none" ng-repeat="f in pCtrl.project.files">
                     <md-button ng-show="f.github && f.id === pCtrl.refFile.id" title="Push to GitHub" ng-click="app.showPushDialog()" class="md-button-fab" aria-label="Push to GitHub" style="width: 30px; height: 30px;">
                       <md-tooltip>
                         Push to Github
@@ -77,7 +106,7 @@
                       <md-tooltip>
                         Edit
                       </md-tooltip>
-                      <md-icon  md-svg-icon="editor:ic_mode_edit_24px" style="color:rgb(76, 175, 80);width:16px;height:16px;" ></md-icon>
+                      <md-icon  md-svg-icon="action:ic_description_24px" style="width:16px;height:16px;" ></md-icon>
                     </md-button>
                     <!-- TODO: find a better way to show the current edited file -->
                     <span style="color:red;" ng-show="f.id === pCtrl.refFile.id">{{f.name}}</span>
@@ -90,17 +119,15 @@
     </section>
   </md-content>
 
-  <div ng-show="user.auth" ng-controller="GithubFilesCtrl as gfiles">
+  <div ng-show="user.auth && pCtrl.project" ng-controller="GithubFilesCtrl as gfiles">
 
     <md-content class="" style="" flex layout-fill>
       <md-divider></md-divider>
-        <md-toolbar class="md-warn">
-            <div class="md-toolbar-tools">
-                <h4>GitHub Integration</h4>
+        <md-toolbar class="md-primary md-hue-4 " style="background-color: #aed581">
+            <div class="md-toolbar-tools ">
+                <h4><md-icon md-svg-icon="file:ic_cloud_download_24px" ></md-icon> GitHub Integration</h4>
             </div>
         </md-toolbar>
-      <p ng-hide="pCtrl.project"><em>NOTE : You need to <b>Create a project</b>
-        OR <b>load an existing project</b> if you want to add a file hosted on Github.</em></p>
         <section>
             <md-list layout="vertical">
                 <md-item >

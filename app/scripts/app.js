@@ -43,6 +43,7 @@ EditAdocApp.controller('AppCtrl', function($rootScope, $scope, $mdSidenav, $mdTo
    $rootScope.notifyUserMessage = {};
    $rootScope.commitMessage = ""; //TODO delete from $rootScope
 
+
     vm.toastPosition = {
       bottom: false,
       top: true,
