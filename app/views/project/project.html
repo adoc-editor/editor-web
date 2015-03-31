@@ -24,10 +24,10 @@
         </md-item>
     </md-content>
 
-  <md-content ng-show="user.auth.uid" class="" style="" flex layout-fill>
-    <section>
-      <md-list layout="vertical">
-        <md-item >
+  <md-content ng-show="user.auth.uid" class="md-accent" flex layout-fill>
+    <section class="md-accent">
+      <md-list layout="vertical" class="md-accent">
+        <md-item class="md-accent">
           <md-item-content>
             <div class="md-tile-content">
               <form style="padding: 1px;margin:1px" ng-submit="pCtrl.newProject()">
@@ -48,7 +48,12 @@
       </section>
       <md-divider></md-divider>
       <section ng-model="pCtrl.project">
-        <h4>Current Project : {{pCtrl.project.name}}</h4>
+
+          <md-toolbar class="md-warn">
+              <div class="md-toolbar-tools">
+                  <h4>{{pCtrl.project.name}}</h4>
+              </div>
+          </md-toolbar>
           <md-item >
             <md-item-content>
               <div class="md-tile-content">
@@ -66,13 +71,13 @@
                       <md-tooltip>
                         Push to Github
                       </md-tooltip>
-                      <md-icon  icon="images/md-icons/file/svg/ic_cloud_upload_24px.svg" ></md-icon>
+                      <md-icon  md-svg-icon="file:ic_cloud_upload_24px" style="color:rgb(76, 175, 80);width:16px;height:16px;" ></md-icon>
                     </md-button>
                     <md-button title="Edit" ng-click="pCtrl.editFile(f.id)" class="md-button-fab" aria-label="Edit" >
                       <md-tooltip>
                         Edit
                       </md-tooltip>
-                      <md-icon  icon="images/md-icons/editor/svg/ic_mode_edit_18px.svg" ></md-icon>
+                      <md-icon  md-svg-icon="editor:ic_mode_edit_24px" style="color:rgb(76, 175, 80);width:16px;height:16px;" ></md-icon>
                     </md-button>
                     <!-- TODO: find a better way to show the current edited file -->
                     <span style="color:red;" ng-show="f.id === pCtrl.refFile.id">{{f.name}}</span>
@@ -89,7 +94,11 @@
 
     <md-content class="" style="" flex layout-fill>
       <md-divider></md-divider>
-      <h4>Add some Github files</h4>
+        <md-toolbar class="md-warn">
+            <div class="md-toolbar-tools">
+                <h4>GitHub Integration</h4>
+            </div>
+        </md-toolbar>
       <p ng-hide="pCtrl.project"><em>NOTE : You need to <b>Create a project</b>
         OR <b>load an existing project</b> if you want to add a file hosted on Github.</em></p>
         <section>
@@ -106,13 +115,13 @@
                                         <md-tooltip>
                                           Add file to project and Edit
                                         </md-tooltip>
-                                        <md-icon  icon="images/md-icons/content/svg/ic_add_circle_24px.svg" ></md-icon>
+                                        <md-icon  md-svg-icon="content:ic_add_circle_24px" style="color:rgb(76, 175, 80);width:16px;height:16px;" ></md-icon>
                                     </md-button>
                                     <md-button title="Open folder" ng-show="pCtrl.project && file.type==='tree'" ng-click="gfiles.getFiles(file.sha)" class="md-button-fab" aria-label="Edit" style="width: 30px; height: 30px;">
                                         <md-tooltip>
                                             Open the folder
                                         </md-tooltip>
-                                        <md-icon  icon="images/md-icons/file/svg/ic_folder_18px.svg" ></md-icon>
+                                        <md-icon  md-svg-icon="file:ic_folder_24px" style="color:rgb(76, 175, 80);width:16px;height:16px;" ></md-icon>
                                     </md-button>
                                     {{file.path}}
                                 </li>
