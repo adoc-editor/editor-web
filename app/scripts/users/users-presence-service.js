@@ -13,23 +13,7 @@
 
           // Create our references for authenticate users
           var presenceRef = SyncUsersPresence.sync();
-
-
-          // Add ourselves to presence list when online.
-          connectedRef.on('value', function(isOnline) {
-
-              if (isOnline.val()) {
-                  console.log("I'm online");
-
-              } else {
-
-                  // We need to catch anytime we are marked as offline and then set the correct status. We
-                  // could be marked as offline 1) on page load or 2) when we lose our internet connection
-                  // temporarily.
-                  console.log("I'm offline");
-
-              }
-          });
+          
 
           // Get the user count and notify the application
           presenceRef.on('value', function(snap) {
@@ -52,7 +36,7 @@
               var myLastOnlineRef = SyncUsersPresence.syncUserLastOnline(authData.uid);
               var myStatusOnlineRef = SyncUsersPresence.syncUserIsOnline(authData.uid);
 
-              myPresenceRef.set({"username" : authData.github.username});
+              myPresenceRef.set({"username" : authData.github.username, "avatar" : authData.github.cachedUserProfile.avatar_url });
               var con = myConnectionsRef.push(true);
               myStatusOnlineRef.set(true);
               // when I disconnect, remove this device
