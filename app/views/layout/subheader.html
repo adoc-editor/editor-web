@@ -1,6 +1,6 @@
 <md-subheader style="margin-right: 0;background-color: #f7f7f8" class="md-accent"
               ng-controller="SubheaderCtrl as subheader" ng-show="subheader.isActive() && user.auth">
-    <md-icon md-svg-icon="image:ic_looks_{{subheader.breadcrumb.nbUsers}}_24px" style="color:#aed581;width:18px;height:18px;" ></md-icon>
+    <md-icon md-svg-icon="image:ic_filter_{{subheader.breadcrumb.users.length}}_24px" style="color:#aed581;width:18px;height:18px;" ></md-icon>
     <md-icon md-svg-icon="file:ic_folder_open_24px" alt="" style="width:16px;height:16px;" >
     </md-icon>
     {{subheader.breadcrumb.project}}

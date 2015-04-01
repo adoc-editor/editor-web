@@ -15,8 +15,9 @@
 
         vm.breadcrumb = {
             project: "Select a project",
-            file: "& edit a file !",
-            nbUsers: 2
+            file: "then edit a file !",
+            fileId: "",
+            users: new Array()
         };
 
         vm.isActive = function() {

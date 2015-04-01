@@ -31,6 +31,10 @@
         return $firebaseArray(ref.child(projectId).child("files").child(fileId));
     }
 
+    var syncUsersAsArray = function(projectId) {
+        return $firebaseArray(ref.child(projectId).child("users"));
+    }
+
     var syncFile = function(projectId, fileId) {
         return (ref.child(projectId).child("files").child(fileId));
     }
@@ -57,6 +61,7 @@
 
     return {
       syncAsObject: syncAsObject,
+      syncUsersAsArray: syncUsersAsArray,
       syncFileAsObject: syncFileAsObject,
       syncFileAsArray: syncFileAsArray,
       syncFile: syncFile,
@@ -116,7 +121,7 @@
     }
   }]);
 
-    module.factory("SyncUsersPresence", ["FBURL", "$firebaseObject", function(FBURL, $firebaseArray){
+    module.factory("SyncUsersPresence", ["FBURL", "$firebaseArray", "$firebaseObject", function(FBURL, $firebaseArray, $firebaseObject){
         var ref = new Firebase(FBURL+"/presence/");
 
         var sync = function() {
@@ -135,6 +140,10 @@
             return (ref.child(userid));
         }
 
+        var syncUserAsObject = function(userid) {
+            return $firebaseObject(ref.child(userid));
+        }
+
         var syncUserLastOnline = function(userid) {
             return (ref.child(userid).child("lastOnline"));
         }
@@ -148,6 +157,7 @@
             syncUserLastOnline: syncUserLastOnline,
             syncUserIsOnline: syncUserIsOnline,
             syncUser: syncUser,
+            syncUserAsObject: syncUserAsObject,
             syncUsersPresenceAsArray: syncUsersPresenceAsArray
         }
     }]);

@@ -3,11 +3,13 @@
 
     var module = angular.module('editAdoc.project.controller', []);
 
-    function ProjectCtrl($scope, $rootScope, $location, $mdSidenav, ProjectService, Editor, SyncProject) {
+    function ProjectCtrl($scope, $rootScope, $location, $mdSidenav, ProjectService, UsersService, Editor, SyncProject) {
         var vm = this;
 
         /** the backend project */
         vm.project;
+        vm.projectUsers;
+
         /** object to bind with the input */
         vm.theProject = { id:'', name : "My AsciiDoc project"};
         vm.loadedProject = { id: '', value:''};
@@ -113,10 +115,45 @@
         vm.loadProject = function(){
           vm.project = SyncProject.syncAsObject(vm.loadedProject.id);
           vm.project.$loaded().then(function(){
-              vm.isProjectLoaded = true;
-              vm.sendUpdateBreadcrumbEvent({breadcrumb : {project : vm.project.name}});
+              UsersService.getUsersProject(vm.loadedProject.id).then(
+                  function(users){
+                      vm.projectUsers = users;
+                      vm.sendUpdateBreadcrumbEvent({breadcrumb : {project : vm.project.name , file : "", fileId: "", users: vm.projectUsers}});
+                      vm.isProjectLoaded = true;
+                  }
+              );
           });
         };
+
+        /*
+         *  ACTIONS FOR USERS
+         */
+
+        /**
+         * Add an user to an existing project.
+         */
+        vm.addUserToProject = function(userId){
+
+            //Add a reference to the project on the user
+            UsersService.attachProjectToUser(userId, vm.project.$id, vm.project.name, false).then(
+                function(){
+                    var listUsers = SyncProject.syncUsersAsArray(vm.project.$id);
+                    listUsers.$loaded().then(function(){
+                        listUsers[userId] = "max";
+                        listUsers.$save(userId).then(
+                            function(){
+                                vm.loadProject();   
+                            }
+                        )}
+                    );
+                }
+            );
+
+        };
+
+        /*
+        *  ACTIONS FOR FILES
+         */
 
         /**
          * Create a new sample asciidoc file
@@ -177,6 +214,18 @@
             });
 
         };
+
+        /**
+         * Give the name for each project groups
+         * @param isOwner
+         * @returns {string}
+         */
+        vm.getRoleOnProject = function(isOwner){
+            if (isOwner)
+                return "My projects"
+            else
+                return "As invited"
+        }
 
     }
     module.controller('ProjectCtrl', ProjectCtrl);

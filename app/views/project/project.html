@@ -38,8 +38,8 @@
                       </md-input-container>
                   </div>
               </form>
-                <select ng-model="pCtrl.loadedProject" ng-options="value.name for (id , value) in user.projects" ng-change="pCtrl.loadProject()">
-                <option value="">--- Load a Project ---</option>
+                <select ng-model="pCtrl.loadedProject" ng-options="value.name group by pCtrl.getRoleOnProject(value.owner) for (id , value) in user.projects" ng-change="pCtrl.loadProject()">
+                <option value="">--- Select a Project ---</option>
               </select>
               </div>
             </md-item-content>
@@ -65,15 +65,10 @@
           <md-item ng-show="pCtrl.isProjectLoaded">
             <md-item-content>
               <div class="md-tile-content">
-                  <md-button title="Project information" class="md-button-fab" aria-label="Project information" >
+                  
+                  <md-button title="Invite an user" ng-click="pCtrl.addUserToProject('github:501525')" class="md-button-fab" aria-label="Invite an user" >
                       <md-tooltip>
-                          Project information
-                      </md-tooltip>
-                      <md-icon  md-svg-icon="action:ic_info_24px" style="color:#aed581" ></md-icon>
-                  </md-button>
-                  <md-button title="Invite an user" class="md-button-fab" aria-label="Invite an user" >
-                      <md-tooltip>
-                          Invite an user to this project
+                          Add an user to this project
                       </md-tooltip>
                       <md-icon  md-svg-icon="social:ic_person_add_24px" style="color:#aed581" ></md-icon>
                   </md-button>
@@ -81,8 +76,14 @@
                       <md-tooltip>
                           Number of users
                       </md-tooltip>
-                      <md-icon  md-svg-icon="image:ic_looks_3_24px" style="color:#aed581" ></md-icon>
+                      <md-icon  md-svg-icon="image:ic_filter_{{pCtrl.projectUsers.length}}_24px" style="color:#aed581" ></md-icon>
                   </md-button>
+                  <span>
+                      <img ng-repeat="user in pCtrl.projectUsers | filter: { isOnline: true }" style="margin-left: 2px; padding-bottom:2px; border-bottom: green solid 5px;"
+                           ng-src="{{ user.avatar }}&s=24" alt="{{ user.username }}" title="ONLINE"/>
+                      <img ng-repeat="user in pCtrl.projectUsers | filter: { isOnline: false }" style="margin-left: 2px; padding-bottom:2px; border-bottom: grey solid 5px;"
+                           ng-src="{{ user.avatar }}&s=24" alt="{{ user.username }}" title="OFFLINE"/>
+                  </span>
                 <form style="padding: 1px;"  ng-show="pCtrl.project" ng-submit="pCtrl.newBlankFile()">
                     <div layout layout-sm="column">
                       <md-input-container flex>

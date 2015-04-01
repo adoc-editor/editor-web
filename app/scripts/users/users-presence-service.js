@@ -13,7 +13,7 @@
 
           // Create our references for authenticate users
           var presenceRef = SyncUsersPresence.sync();
-          
+
 
           // Get the user count and notify the application
           presenceRef.on('value', function(snap) {
@@ -23,9 +23,12 @@
 
           //new user connected
           presenceRef.on("child_changed", function(snapshot) {
-              var newUserConnected = snapshot.val();
-              if (newUserConnected.username && newUserConnected.username != null && newUserConnected.isOnline){
-                $rootScope.$broadcast('onNewUserConnected', { user : newUserConnected})
+              if ($rootScope.user){
+                  var newUserConnected = snapshot.val();
+                  if (newUserConnected.username && newUserConnected.username != null &&
+                      newUserConnected.username != $rootScope.user.auth.github.username && newUserConnected.isOnline){
+                    $rootScope.$broadcast('onNewUserConnected', { user : newUserConnected})
+                  }
               }
 
           });
