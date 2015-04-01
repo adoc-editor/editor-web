@@ -1,23 +1,49 @@
 <div class="col-md-12">
-  <md-content class="md-padding" >
-     <h1>My Profile </h1>
-      <p ng-show="user" >Hello {{user.auth.github.displayName}}.</p>
-      <ul ng-show="user">
-        <li>email : {{user.auth.github.email}}</li>
-        <li>username : {{user.auth.github.username}}</li>
-      </ul>
-      <h2>My projects</h2>
-      <ul ng-repeat="project in user.projects">
-        <li>{{project.name}}</li>
-      </ul>
-      <p ng-hide="user" >You need <b>to be logged with Github</b> in order to view your profile.</p>
 
-      <md-item ng-hide="user.auth.uid"><md-item-content>
+    <md-toolbar class="md-warn" style="background-color: #aed581">
+        <div class="md-toolbar-tools">
+            <h2 class="md-flex">My Profile / My Projects</h2>
+        </div>
+    </md-toolbar>
+      <md-tabs class="md-accent" md-selected="tabs.selectedIndex" ng-show="user">
+          <md-tab id="tab1">
+              <md-tab-label>Profile</md-tab-label>
+              <md-tab-template>
+                  <p>Hello {{user.auth.github.displayName}}.</p>
+                  <md-input-container md-no-float>
+                      <md-icon md-svg-icon="social:ic_person_24px" class="name"></md-icon>
+                      <input ng-model="user.auth.github.username" type="text" placeholder="Name" ng-disabled="true">
+                  </md-input-container>
+                  <md-input-container md-no-float>
+                      <md-icon md-svg-icon="communication:ic_email_24px" class="email"></md-icon>
+                      <input ng-model="user.auth.github.email" type="email" placeholder="Email (required)" ng-disabled="true">
+                  </md-input-container>
+              </md-tab-template>
+          </md-tab>
+
+          <md-tab id="tab2">
+              <md-tab-label>Projects</md-tab-label>
+              <md-tab-template>
+                  <ul ng-repeat="project in user.projects">
+                      <li>{{project.name}}</li>
+                  </ul>
+              </md-tab-template>
+          </md-tab>
+      </md-tabs>
+
+
+  <md-content class="md-padding" ng-hide="user">
+      <p>You need <b>to be logged with Github</b> in order to view your profile.</p>
+      <md-item ><md-item-content>
         <div class="md-tile-content">
-          <md-button aria-label="Authentification with Github" class="md-button-fab" ng-controller="UsersLoginCtrl as login"  ng-click="login.authentification('github')">
-            <md-icon icon="images/github-circle.svg">
-            </md-icon> <span>Auth with GitHub</span>
+          <md-button aria-label="Authentification with Github" class="md-fab" ng-controller="UsersLoginCtrl as login"  ng-click="login.authentification('github')">
+            <md-icon md-svg-icon="images/github-circle.svg" title="">
+            </md-icon>
+              <md-tooltip>
+                  Sign-in with your GitHub Account
+              </md-tooltip>
           </md-button>
+
         </div>
       </md-item-content>
       </md-item>

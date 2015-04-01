@@ -2,28 +2,32 @@
     <md-toolbar >
         <h1 class="md-toolbar-tools" style="color:white;">Projects
             <md-button aria-label="Close" class="md-button-fab" ng-click="pCtrl.close()">
-                <md-icon icon="images/md-icons/navigation/svg/ic_close_24px.svg">
+                <md-icon md-svg-icon="action:ic_highlight_remove_24px">
                 </md-icon>
             </md-button>
         </h1>
     </md-toolbar>
 
-   <md-content ng-hide="user.auth.uid">
-     <md-item><md-item-content>
-       <div class="md-tile-content">
-     <p>You need to <strong>be logged in</strong> in order to Create Project and work on AsciDoc files.</p>
-       <md-button aria-label="Authentification with Github" class="md-button-fab" ng-controller="UsersLoginCtrl as login"  ng-click="login.authentification('github')">
-         <md-icon icon="images/github-circle.svg">
-         </md-icon> <span>Auth with GitHub</span>
-       </md-button>
-         </div>
-    </md-item-content></md-item>
-   </md-content>
+    <md-content class="md-padding" ng-hide="user">
+        <p>You need <b>to be logged with Github</b> in order to view your profile.</p>
+        <md-item ><md-item-content>
+            <div class="md-tile-content">
+                <md-button aria-label="Authentification with Github" class="md-fab" ng-controller="UsersLoginCtrl as login"  ng-click="login.authentification('github')">
+                    <md-icon md-svg-icon="images/github-circle.svg" title="">
+                    </md-icon>
+                    <md-tooltip>
+                        Sign-in with your GitHub Account
+                    </md-tooltip>
+                </md-button>
+            </div>
+        </md-item-content>
+        </md-item>
+    </md-content>
 
-  <md-content ng-show="user.auth.uid" class="" style="" flex layout-fill>
-    <section>
-      <md-list layout="vertical">
-        <md-item >
+  <md-content ng-show="user.auth.uid" class="md-accent" flex layout-fill>
+    <section class="md-accent">
+      <md-list layout="vertical" class="md-accent">
+        <md-item class="md-accent">
           <md-item-content>
             <div class="md-tile-content">
               <form style="padding: 1px;margin:1px" ng-submit="pCtrl.newProject()">
@@ -43,11 +47,42 @@
         </md-list>
       </section>
       <md-divider></md-divider>
-      <section ng-model="pCtrl.project">
-        <h4>Current Project : {{pCtrl.project.name}}</h4>
-          <md-item >
+      <!-- Selected Project -->
+      <section ng-model="pCtrl.project" ng-show="pCtrl.project">
+          <md-toolbar class="md-primary md-shade-2" style="background-color: #aed581">
+
+              <div class="md-toolbar-tools md-shade-2">
+                  <h4><md-icon md-svg-icon="file:ic_folder_open_24px"  >
+                  </md-icon> {{pCtrl.project.name}}</h4>
+              </div>
+          </md-toolbar>
+          <md-item ng-hide="pCtrl.isProjectLoaded">
+              <md-item-content>
+                    <md-progress-circular class="md-accent " md-mode="indeterminate" ></md-progress-circular>
+              </md-item-content>
+           </md-item>
+          <!-- files list -->
+          <md-item ng-show="pCtrl.isProjectLoaded">
             <md-item-content>
               <div class="md-tile-content">
+                  <md-button title="Project information" class="md-button-fab" aria-label="Project information" >
+                      <md-tooltip>
+                          Project information
+                      </md-tooltip>
+                      <md-icon  md-svg-icon="action:ic_info_24px" style="color:#aed581" ></md-icon>
+                  </md-button>
+                  <md-button title="Invite an user" class="md-button-fab" aria-label="Invite an user" >
+                      <md-tooltip>
+                          Invite an user to this project
+                      </md-tooltip>
+                      <md-icon  md-svg-icon="social:ic_person_add_24px" style="color:#aed581" ></md-icon>
+                  </md-button>
+                  <md-button title="Number of users" class="md-button-fab" aria-label="Number of users" >
+                      <md-tooltip>
+                          Number of users
+                      </md-tooltip>
+                      <md-icon  md-svg-icon="image:ic_looks_3_24px" style="color:#aed581" ></md-icon>
+                  </md-button>
                 <form style="padding: 1px;"  ng-show="pCtrl.project" ng-submit="pCtrl.newBlankFile()">
                     <div layout layout-sm="column">
                       <md-input-container flex>
@@ -56,19 +91,22 @@
                       </md-input-container>
                   </div>
                 </form>
-                <ul class="md-toolbar" >
-                  <li ng-repeat="f in pCtrl.project.files">
+
+
+
+                  <ul style="margin-left: 0" >
+                    <li style="list-style: none" ng-repeat="f in pCtrl.project.files">
                     <md-button ng-show="f.github && f.id === pCtrl.refFile.id" title="Push to GitHub" ng-click="app.showPushDialog()" class="md-button-fab" aria-label="Push to GitHub" style="width: 30px; height: 30px;">
                       <md-tooltip>
                         Push to Github
                       </md-tooltip>
-                      <md-icon  icon="images/md-icons/file/svg/ic_cloud_upload_24px.svg" ></md-icon>
+                      <md-icon  md-svg-icon="file:ic_cloud_upload_24px" style="color:rgb(76, 175, 80);width:16px;height:16px;" ></md-icon>
                     </md-button>
                     <md-button title="Edit" ng-click="pCtrl.editFile(f.id)" class="md-button-fab" aria-label="Edit" >
                       <md-tooltip>
                         Edit
                       </md-tooltip>
-                      <md-icon  icon="images/md-icons/editor/svg/ic_mode_edit_18px.svg" ></md-icon>
+                      <md-icon  md-svg-icon="action:ic_description_24px" style="width:16px;height:16px;" ></md-icon>
                     </md-button>
                     <!-- TODO: find a better way to show the current edited file -->
                     <span style="color:red;" ng-show="f.id === pCtrl.refFile.id">{{f.name}}</span>
@@ -81,13 +119,15 @@
     </section>
   </md-content>
 
-  <div ng-show="user.auth" ng-controller="GithubFilesCtrl as gfiles">
+  <div ng-show="user.auth && pCtrl.project" ng-controller="GithubFilesCtrl as gfiles">
 
     <md-content class="" style="" flex layout-fill>
       <md-divider></md-divider>
-      <h4>Add some Github files</h4>
-      <p ng-hide="pCtrl.project"><em>NOTE : You need to <b>Create a project</b>
-        OR <b>load an existing project</b> if you want to add a file hosted on Github.</em></p>
+        <md-toolbar class="md-primary md-hue-4 " style="background-color: #aed581">
+            <div class="md-toolbar-tools ">
+                <h4><md-icon md-svg-icon="file:ic_cloud_download_24px" ></md-icon> GitHub Integration</h4>
+            </div>
+        </md-toolbar>
         <section>
             <md-list layout="vertical">
                 <md-item >
@@ -102,13 +142,13 @@
                                         <md-tooltip>
                                           Add file to project and Edit
                                         </md-tooltip>
-                                        <md-icon  icon="images/md-icons/content/svg/ic_add_circle_24px.svg" ></md-icon>
+                                        <md-icon  md-svg-icon="content:ic_add_circle_24px" style="color:rgb(76, 175, 80);width:16px;height:16px;" ></md-icon>
                                     </md-button>
                                     <md-button title="Open folder" ng-show="pCtrl.project && file.type==='tree'" ng-click="gfiles.getFiles(file.sha)" class="md-button-fab" aria-label="Edit" style="width: 30px; height: 30px;">
                                         <md-tooltip>
                                             Open the folder
                                         </md-tooltip>
-                                        <md-icon  icon="images/md-icons/file/svg/ic_folder_18px.svg" ></md-icon>
+                                        <md-icon  md-svg-icon="file:ic_folder_24px" style="color:rgb(76, 175, 80);width:16px;height:16px;" ></md-icon>
                                     </md-button>
                                     {{file.path}}
                                 </li>

@@ -19,7 +19,9 @@
         /** handle revision for the file **/
         vm.revisionsAsArray;
 
-      /**
+        vm.isProjectLoaded = false;
+
+        /**
          * Close this sidebar
          */
         vm.close = function() {
@@ -77,6 +79,14 @@
           $scope.$emit('notifyUserEvent', data);
         };
 
+        /**
+         * Send an object with breadcrumb infos
+         * @param data
+         */
+        vm.sendUpdateBreadcrumbEvent = function(data){
+            $rootScope.$broadcast('updateBreadcrumbEvent', data.breadcrumb);
+        };
+
 
         /**
          * ACTIONS
@@ -90,6 +100,10 @@
         vm.newProject = function(){
           var id = ProjectService.createProject(vm.theProject.name, $rootScope.user.auth.uid, $rootScope.user.auth.github.username);
           vm.project = SyncProject.syncAsObject(id);
+          vm.project.$loaded().then(function(){
+              vm.isProjectLoaded = true;
+              vm.sendUpdateBreadcrumbEvent({breadcrumb : {project : vm.project.name}});
+          });
           vm.theProject.name = "";
         };
 
@@ -98,6 +112,10 @@
          */
         vm.loadProject = function(){
           vm.project = SyncProject.syncAsObject(vm.loadedProject.id);
+          vm.project.$loaded().then(function(){
+              vm.isProjectLoaded = true;
+              vm.sendUpdateBreadcrumbEvent({breadcrumb : {project : vm.project.name}});
+          });
         };
 
         /**
@@ -128,6 +146,7 @@
               file: vm.project.files[idFile],
               message: "You're working on " + vm.project.files[idFile].name + " file."
             });
+            vm.sendUpdateBreadcrumbEvent({breadcrumb : {project : vm.project.name, file : vm.project.files[idFile].name}});
           });
 
         };

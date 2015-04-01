@@ -1,20 +1,18 @@
-<md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="sidebar">
+<md-sidenav class="md-whiteframe-z2" md-component-id="sidebar">
   <div ng-controller="SidebarCtrl as sidebar">
     <md-toolbar class="md-theme" >
         <h1 class="md-toolbar-tools"><a ng-href="#home" style="color:white;">adoc-editor.io</a>
             <md-button aria-label="Close" class="md-button-fab " ng-click="sidebar.close()">
-                <md-icon icon="images/md-icons/navigation/svg/ic_close_24px.svg">
+                <md-icon md-svg-icon="action:ic_highlight_remove_24px">
                 </md-icon>
             </md-button>
         </h1>
     </md-toolbar>
-    <md-content class="md-content-padding" >
+    <md-list>
       <md-item >
-        <md-item-content>
-          <div class="md-tile-left">
+
             <p><a ng-href="#documentation">Documentation</a></p>
-          </div>
-        </md-item-content>
+
         <md-divider></md-divider>
       </md-item>
       <md-item >
@@ -41,6 +39,6 @@
         </md-item-content>
         <md-divider></md-divider>
       </md-item>
-    </md-content>
+    </md-list>
   </div>
 </md-sidenav>

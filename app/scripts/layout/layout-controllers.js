@@ -10,6 +10,31 @@
         };
     }
 
+    function SubheaderCtrl ($scope, $location) {
+        var vm = this;
+
+        vm.breadcrumb = {
+            project: "Select a project",
+            file: "& edit a file !",
+            nbUsers: 2
+        };
+
+        vm.isActive = function() {
+            if ($location.path() == "/editor" || $location.path() == "/preview" || $location.path() == "/realtime"){
+               return true;
+            }
+            return false;
+        };
+
+
+        //Update breadcrumb
+        $scope.$on('updateBreadcrumbEvent', function (event, data) {
+            vm.breadcrumb = data;
+        });
+
+    }
+
+
     /**
      * Controller for notification message
      */
@@ -43,6 +68,7 @@
     };
 
     module.controller('SidebarCtrl', SidebarCtrl);
+    module.controller('SubheaderCtrl', SubheaderCtrl);
     module.controller('DialogCtrl', DialogCtrl);
     module.controller('ToastNotifyCtrl', ToastNotifyCtrl);
 
