@@ -411,7 +411,7 @@ module.exports = function (grunt) {
     'filerev',
     'usemin',
     'htmlmin',
-    'war'
+    //'war'
 
   ]);
 
