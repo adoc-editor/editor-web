@@ -74,6 +74,7 @@
           //broadcast event for preview
           else {
             $rootScope.$broadcast('aceLoadContentEvent', data);
+            $location.path("/editor");
           }
         };
 
@@ -192,13 +193,12 @@
               fileRevision: tmpFileRevision
             });
 
-            $location.path("/editor");
-
             vm.sendNotifyUserEvent({
               file: vm.project.files[idFile],
               message: "You're working on " + vm.project.files[idFile].name + " file."
             });
             vm.sendUpdateBreadcrumbEvent({breadcrumb : {project : vm.project.name, file : vm.project.files[idFile].name}});
+
           });
 
         };
@@ -218,8 +218,6 @@
                     vm.sendAceLoadContentEvent({
                         fileRevision: newFile.newFile.revision
                     });
-
-                    $location.path("/editor");
 
                     vm.sendNotifyUserEvent({
                         file: newFile.newFile,

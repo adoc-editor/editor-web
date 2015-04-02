@@ -2,7 +2,7 @@
 
     var module = angular.module('editAdoc.editor.controller', []);
 
-    function EditorCtrl($rootScope, $scope, Editor, Storage) {
+    function EditorCtrl($rootScope, $scope, $location, Editor, Storage) {
         var vm = this;
 
         vm.aceLoaded = Editor.aceLoaded;

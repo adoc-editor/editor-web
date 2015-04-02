@@ -197,7 +197,11 @@
             if(fileRevision && fileRevision.projectId && fileRevision.fileId && fileRevision.$id) {
                 that.fileRevision = fileRevision;
                 that.syncFileRevision = SyncProject.syncFileRevisionAsObject(that.fileRevision.projectId, that.fileRevision.fileId, that.fileRevision.$id);
-                initFileRevisionInEditor(fileRevision);
+                that.syncFileRevision.$loaded().then(
+                    function(){
+                        initFileRevisionInEditor(fileRevision);
+                    }
+                );
             } else {
                 console.log("[WARN] file revision not attached.")
             }
