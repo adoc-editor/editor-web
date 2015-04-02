@@ -142,7 +142,7 @@
                         listUsers[userId] = "max";
                         listUsers.$save(userId).then(
                             function(){
-                                vm.loadProject();   
+                                vm.loadProject();
                             }
                         )}
                     );

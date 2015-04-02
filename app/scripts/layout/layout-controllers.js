@@ -48,7 +48,7 @@
     };
 
     /**
-     * Controller for dialog boxes
+     * Controller for dialog box : commit to github
      */
     function DialogCtrl($mdDialog, $rootScope) {
         var vm = this;
@@ -68,9 +68,31 @@
 
     };
 
+    /**
+     * Controller for dialog box : attach user to project
+     */
+    function DialogUserToProjectCtrl($mdDialog, $rootScope) {
+        var vm = this;
+
+        vm.usersAvailable = new Array();
+
+        vm.hide = function() {
+            $mdDialog.hide();
+        };
+        vm.cancel = function() {
+            $mdDialog.cancel();
+        };
+        vm.answer = function(answer) {
+            $rootScope.userIdToAttach =  answer;
+            $mdDialog.hide(answer);
+        };
+
+    };
+
     module.controller('SidebarCtrl', SidebarCtrl);
     module.controller('SubheaderCtrl', SubheaderCtrl);
     module.controller('DialogCtrl', DialogCtrl);
+    module.controller('DialogUserToProjectCtrl', DialogUserToProjectCtrl);
     module.controller('ToastNotifyCtrl', ToastNotifyCtrl);
 
 })();
