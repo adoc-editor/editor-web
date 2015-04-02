@@ -22,6 +22,7 @@
         vm.revisionsAsArray;
 
         vm.isProjectLoaded = false;
+        vm.isOwner = false;
 
         //settings
         vm.activeGitHubIntegration = defaults.enableGitHubIntegration;
@@ -107,6 +108,7 @@
           vm.project = SyncProject.syncAsObject(id);
           vm.project.$loaded().then(function(){
               vm.isProjectLoaded = true;
+              vm.isOwner = true;
               vm.sendUpdateBreadcrumbEvent({breadcrumb : {project : vm.project.name}});
           });
           vm.theProject.name = "";
@@ -117,6 +119,11 @@
          */
         vm.loadProject = function(){
           vm.project = SyncProject.syncAsObject(vm.loadedProject.id);
+          ProjectService.isOwner(vm.loadedProject.id, $rootScope.user.auth.uid).then(
+              function(data){
+                  vm.isOwner = data;
+              }
+          );
           vm.project.$loaded().then(function(){
               UsersService.getUsersProject(vm.loadedProject.id).then(
                   function(users){
@@ -133,7 +140,7 @@
          */
 
         /**
-         * Add an user to an existing project.
+         * Add a user to an existing project.
          */
         vm.addUserToProject = function(userId, username){
             vm.tmpTheId = userId;

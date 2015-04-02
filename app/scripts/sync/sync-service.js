@@ -23,6 +23,10 @@
       return $firebaseObject(ref.child(projectId));
     }
 
+    var syncOwnerAsObject = function(projectId) {
+      return $firebaseObject(ref.child(projectId).child("owner"));
+    }
+
     var syncFileAsObject = function(projectId, fileId) {
         return $firebaseObject(ref.child(projectId).child("files").child(fileId));
     }
@@ -61,6 +65,7 @@
 
     return {
       syncAsObject: syncAsObject,
+      syncOwnerAsObject: syncOwnerAsObject,
       syncUsersAsArray: syncUsersAsArray,
       syncFileAsObject: syncFileAsObject,
       syncFileAsArray: syncFileAsArray,

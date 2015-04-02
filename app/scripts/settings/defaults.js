@@ -8,10 +8,10 @@ EditAdocApp.config(function ($provide) {
 
   // BEGIN-DEFAULTS-JSON
   {
-
+    version: '0.1.0',
+    enableAttachUserToProjectForNoOwner: false,
     enableGitHubIntegration: false,
 
-    converter: 'html5',
 
     exampleFiles: [
       'default.adoc',

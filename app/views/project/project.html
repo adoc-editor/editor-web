@@ -66,9 +66,9 @@
             <md-item-content>
               <div class="md-tile-content">
                   
-                  <md-button title="Invite an user" ng-click="pCtrl.showUserToProjectDialog()" class="md-button-fab" aria-label="Invite an user" >
+                  <md-button ng-show="pCtrl.isOwner" title="Invite a user" ng-click="pCtrl.showUserToProjectDialog()" class="md-button-fab" aria-label="Invite an user" >
                       <md-tooltip>
-                          Add an user to this project
+                          Add a user to this project
                       </md-tooltip>
                       <md-icon  md-svg-icon="social:ic_person_add_24px" style="color:#aed581" ></md-icon>
                   </md-button>

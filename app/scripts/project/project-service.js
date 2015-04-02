@@ -7,7 +7,7 @@
    * Project service
    *
    */
-  module.service('ProjectService',["Sync", "SyncProject", "UsersService", function(Sync, SyncProject, UsersService) {
+  module.service('ProjectService',["$q", "Sync", "SyncProject", "UsersService", function($q, Sync, SyncProject, UsersService) {
 
     /**
      * Create a new project and attach the user to this project
@@ -165,6 +165,26 @@
       return file;
     };
 
+      /**
+       *
+       * @param projectId
+       * @param userId
+       */
+    function isOwner(projectId, userId){
+          var deferred = $q.defer();
+      var isOwner;
+      var owner = SyncProject.syncOwnerAsObject(projectId);
+      owner.$loaded().then(function(data){
+          if (owner.$value === userId){
+              isOwner = true;
+          } else {
+              isOwner = false;
+          }
+          deferred.resolve(isOwner)
+      });
+       return deferred.promise;
+    }
+
     /**
      * UUID generator
      * @returns {string}
@@ -184,6 +204,7 @@
     this.createFile = createFile;
     this.createSampleFile = createSampleFile;
     this.guid = guid;
+    this.isOwner = isOwner;
 
   }]);
 
