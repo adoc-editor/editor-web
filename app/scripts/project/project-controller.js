@@ -131,6 +131,7 @@
                       vm.projectUsers = users;
                       vm.sendUpdateBreadcrumbEvent({breadcrumb : {project : vm.project.name , file : "", fileId: "", users: vm.projectUsers}});
                       vm.isProjectLoaded = true;
+                      $location.path("/editor");
                   }
               );
           });
