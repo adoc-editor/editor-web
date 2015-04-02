@@ -1,19 +1,35 @@
-<md-dialog aria-label="Add user" class="md-theme">
-  <md-content>
-    <md-subheader class="md-sticky-no-effect">Add a user to this project</md-subheader>
-    <div class="md-tile-content">
-      <ul>
-        <li ng-repeat="user in dialog.users">
-          <md-button ng-aria="Add this user" aria-label="Cancel" ng-click="dialog.attachUserToProject()">
-            ADD USER
-          </md-button>
-        </li>
-      </ul>
+<md-dialog aria-label="Add user" class="md-theme" >
+  <md-toolbar class="md-primary md-shade-2" style="background-color: #aed581">
+    <div class="md-toolbar-tools md-shade-2">
+      <h4>Add a user to this project</h4>
+    </div>
+  </md-toolbar>
+  <md-content class="md-theme">
+    <div class="warn">
+      <md-list>
+        <md-item ng-repeat="user in dialog.usersAvailable">
+          <md-item-content>
+            <div class="md-tile-left">
+              <img ng-src="{{user.avatar}}" class="avatar" alt="{{user.username}}">
+            </div>
+            <div class="md-tile-content">
+              <h3>{{user.username}}</h3>
+              <md-button class="md-theme" ng-aria="Add this user" aria-label="Cancel" ng-click="dialog.attachUserToProject(user.$id, user.username)">
+                ADD USER
+              </md-button>
+              <md-button ng-show="user.isOnline === true" class="md-primary md-hue2 ">ONLINE</md-button>
+              <md-button ng-disabled="true" ng-show="user.isOnline === false" class="md-primary ">OFFLINE</md-button>
+            </div>
+          </md-item-content>
+          <md-divider ng-if="!$last"></md-divider>
+        </md-item>
+      </md-list>
+
     </div>
   </md-content>
-  <div class="md-actions" layout="row">
+  <div class="md-actions" class="md-theme" layout="row">
     <span flex></span>
-    <md-button ng-aria="Cancel add user" aria-label="Cancel" ng-click="dialog.answer('Cancel')">
+    <md-button class="md-theme" ng-aria="Cancel add user" aria-label="Cancel" ng-click="dialog.answer('Cancel')">
      Cancel
     </md-button>
   </div>

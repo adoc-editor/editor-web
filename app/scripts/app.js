@@ -103,21 +103,7 @@ EditAdocApp.controller('AppCtrl', function($rootScope, $scope, $mdSidenav, $mdTo
         });
     };
 
-    vm.showUserToProjectDialog = function(ev) {
-        $mdDialog.show({
-            controller: "DialogUserToProjectCtrl",
-            controllerAs: "dialog",
-            templateUrl: 'views/layout/dialog-usertoproject-template.html',
-            targetEvent: ev
-        })
-            .then(function(answer, message) {
-                //broadcast event for push content
-                console.log(answer)
-            }, function() {
 
-                console.log("error")
-            });
-    };
 
 });
 

@@ -3,7 +3,7 @@
 
     var module = angular.module('editAdoc.project.controller', []);
 
-    function ProjectCtrl($scope, $rootScope, $location, $mdSidenav, ProjectService, UsersService, Editor, SyncProject) {
+    function ProjectCtrl($scope, $rootScope, $location, $mdSidenav, $mdDialog, ProjectService, UsersService, Editor, SyncProject, SyncUsersPresence) {
         var vm = this;
 
         /** the backend project */
@@ -132,16 +132,21 @@
         /**
          * Add an user to an existing project.
          */
-        vm.addUserToProject = function(userId){
+        vm.addUserToProject = function(userId, username){
+            vm.tmpTheId = userId;
+            vm.tmpTheUsername = username;
 
             //Add a reference to the project on the user
             UsersService.attachProjectToUser(userId, vm.project.$id, vm.project.name, false).then(
-                function(){
+                function(data){
                     var listUsers = SyncProject.syncUsersAsArray(vm.project.$id);
-                    listUsers.$loaded().then(function(){
-                        listUsers[userId] = "max";
-                        listUsers.$save(userId).then(
+                    listUsers.$loaded().then(function(data){
+                        listUsers[5] = {$id : vm.tmpTheId, $value: vm.tmpTheUsername};
+                        listUsers.$save(5).then(
+
                             function(){
+                                vm.tmpTheId =null;
+                                vm.tmpTheUsername = null;
                                 vm.loadProject();
                             }
                         )}
@@ -227,6 +232,55 @@
                 return "As invited"
         }
 
+        vm.showUserToProjectDialog = function(ev) {
+            $mdDialog.show({
+                controller: "DialogUserToProjectCtrl",
+                controllerAs: "dialog",
+                templateUrl: 'views/layout/dialog-usertoproject-template.html',
+                targetEvent: ev,
+                locals: { users: SyncUsersPresence.syncUsersPresenceAsArray() },
+                bindToController: true
+            })
+                .then(function(user) {
+                    //broadcast event for push content
+                    if(user.userId){
+                        console.log(user.userId, user.username);
+                        vm.addUserToProject(user.userId, user.username);
+                    }
+                }, function() {
+                    console.log("add user to project error.")
+                });
+        };
+
     }
+
+    /**
+     * Controller for dialog box : attach user to project
+     */
+    function DialogUserToProjectCtrl($mdDialog, users) {
+        var vm = this;
+
+        users.$loaded().then(function() {
+            vm.usersAvailable = users;
+        });
+
+        vm.hide = function() {
+            $mdDialog.hide();
+        };
+        vm.cancel = function() {
+            $mdDialog.cancel();
+        };
+        vm.answer = function(answer) {
+            $mdDialog.hide();
+        };
+        vm.attachUserToProject = function(userId, username){
+            console.log(userId, username);
+
+            $mdDialog.hide({ userId : userId, username : username });
+        }
+
+    };
+
     module.controller('ProjectCtrl', ProjectCtrl);
+    module.controller('DialogUserToProjectCtrl', DialogUserToProjectCtrl);
 })();

@@ -66,7 +66,7 @@
             <md-item-content>
               <div class="md-tile-content">
                   
-                  <md-button title="Invite an user" ng-click="app.showUserToProjectDialog()" class="md-button-fab" aria-label="Invite an user" >
+                  <md-button title="Invite an user" ng-click="pCtrl.showUserToProjectDialog()" class="md-button-fab" aria-label="Invite an user" >
                       <md-tooltip>
                           Add an user to this project
                       </md-tooltip>
@@ -80,9 +80,9 @@
                   </md-button>
                   <span>
                       <img ng-repeat="user in pCtrl.projectUsers | filter: { isOnline: true }" style="margin-left: 2px; padding-bottom:2px; border-bottom: green solid 5px;"
-                           ng-src="{{ user.avatar }}&s=24" alt="{{ user.username }}" title="ONLINE"/>
+                           ng-src="{{ user.avatar }}&s=24" alt="{{ user.username }}" title="{{ user.username }} is ONLINE"/>
                       <img ng-repeat="user in pCtrl.projectUsers | filter: { isOnline: false }" style="margin-left: 2px; padding-bottom:2px; border-bottom: grey solid 5px;"
-                           ng-src="{{ user.avatar }}&s=24" alt="{{ user.username }}" title="OFFLINE"/>
+                           ng-src="{{ user.avatar }}&s=24" alt="{{ user.username }}" title="{{ user.username }} is OFFLINE"/>
                   </span>
                 <form style="padding: 1px;"  ng-show="pCtrl.project" ng-submit="pCtrl.newBlankFile()">
                     <div layout layout-sm="column">
