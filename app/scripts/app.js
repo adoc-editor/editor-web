@@ -35,13 +35,14 @@ var EditAdocApp = angular.module('editAdoc', [
 ]);
 
 
-EditAdocApp.controller('AppCtrl', function($rootScope, $scope, $mdSidenav, $mdToast, $mdDialog) {
+EditAdocApp.controller('AppCtrl', function($rootScope, $scope, $mdSidenav, $mdToast, $mdDialog, defaults) {
 
     var vm = this;
 
    //Datas into rootScope
    $rootScope.notifyUserMessage = {};
    $rootScope.commitMessage = ""; //TODO delete from $rootScope
+   vm.appVersion =  defaults.version;
 
 
     vm.toastPosition = {

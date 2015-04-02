@@ -28,7 +28,11 @@
     </md-icon> <a ng-href="#home" ng-click="login.authentification('github')" ng-controller="UsersLoginCtrl as login" >A GitHub Account (for now)</a>
     </li>
     <li>A Browser</li>
+    <li><span><em>Optional : the <a target="_blank" title="Asciidoctor user manual" href="http://asciidoctor.org/docs/user-manual/">Asciidoctor user manual :)</a></em></span>
+    </li>
   </ul>
-   <span><em>Optional : the <a target="_blank" title="Asciidoctor user manual" href="http://asciidoctor.org/docs/user-manual/">Asciidoctor user manual :)</a></em></span>
+    <md-divider ng-if="!$last"></md-divider>
+    <br/>
+    <span>Version : {{app.appVersion}}</span>
 </md-content>
 </div>
