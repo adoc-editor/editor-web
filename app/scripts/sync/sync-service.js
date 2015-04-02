@@ -94,6 +94,10 @@
           return $firebaseObject(ref.child(userid).child("projects").child(projectId));
       }
 
+      var syncUserProjects = function(userid) {
+          return (ref.child(userid).child("projects"));
+      }
+
       var syncUsersAsObject = function() {
           return $firebaseObject(ref);
       }
@@ -110,7 +114,8 @@
         syncUserProjectAsObject: syncUserProjectAsObject,
         syncUsersAsObject: syncUsersAsObject,
         sync: sync,
-        syncUsersAsArray: syncUsersAsArray
+        syncUsersAsArray: syncUsersAsArray,
+        syncUserProjects: syncUserProjects
       }
   }]);
 

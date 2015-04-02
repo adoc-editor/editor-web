@@ -6,7 +6,24 @@
    * Users service
    *
    */
-  module.service('UsersService',["SyncUser", "SyncProject", "SyncUsersPresence", "$q", function(SyncUser, SyncProject, SyncUsersPresence, $q) {
+  module.service('UsersService',["SyncUser", "SyncProject", "SyncUsersPresence", "$q", "$rootScope", function(SyncUser, SyncProject, SyncUsersPresence, $q, $rootScope) {
+
+    /**
+    *  Add a listener to know when a user is attached on a project by an other user.
+    * @param authData
+    */
+    function listenToInvitationOnProject(authData) {
+        var refUserProjects = SyncUser.syncUserProjects(authData.uid);
+
+        refUserProjects.on("child_added", function(snapshot) {
+            if ($rootScope.user){
+                var newProject = snapshot.val();
+                if (newProject.owner == false){
+                    $rootScope.$broadcast('notifyUserEvent', { message : "Congrats, You have been associated to the Project : " + newProject.name})
+                }
+            }
+        });
+    }
 
     /**
      * Create a new user
@@ -97,6 +114,7 @@
     this.getUserProjects = getUserProjects;
     this.getUsersProject = getUsersProject;
     this.attachProjectToUser = attachProjectToUser;
+    this.listenToInvitationOnProject = listenToInvitationOnProject;
 
   }]);
 
