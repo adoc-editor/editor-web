@@ -105,13 +105,19 @@
          * to this project.
          */
         vm.newProject = function(){
-          var id = ProjectService.createProject(vm.theProject.name, $rootScope.user.auth.uid, $rootScope.user.auth.github.username);
+          var newId = ProjectService.createProject(vm.theProject.name, $rootScope.user.auth.uid, $rootScope.user.auth.github.username);
+          vm.loadedProject.id = newId;
+          vm.theProject.id = newId;
+          vm.loadProject();
+          /**
           vm.project = SyncProject.syncAsObject(id);
           vm.project.$loaded().then(function(){
               vm.isProjectLoaded = true;
+              vm.loadedProject = {}
               vm.isOwner = true;
               vm.sendUpdateBreadcrumbEvent({breadcrumb : {project : vm.project.name}});
-          });
+          });**/
+
           vm.theProject.name = "";
         };
 
