@@ -56,7 +56,7 @@
       }
 
     var syncFileRevisionEventAsArray = function(projectId, fileId, revisionId) {
-        return $firebaseArray(ref.child(projectId).child("files").child(fileId).child("events").child("revision:"+revisionId).limit(defaults.limitCollaborativeEvents));
+        return $firebaseArray(ref.child(projectId).child("files").child(fileId).child("events").child("revision:"+revisionId).limitToLast(defaults.limitCollaborativeEvents));
     }
 
     var sync = function() {
