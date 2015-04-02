@@ -9,6 +9,8 @@ EditAdocApp.config(function ($provide) {
   // BEGIN-DEFAULTS-JSON
   {
 
+    enableGitHubIntegration: false,
+
     converter: 'html5',
 
     exampleFiles: [

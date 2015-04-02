@@ -3,7 +3,7 @@
 
     var module = angular.module('editAdoc.project.controller', []);
 
-    function ProjectCtrl($scope, $rootScope, $location, $mdSidenav, $mdDialog, ProjectService, UsersService, Editor, SyncProject, SyncUsersPresence) {
+    function ProjectCtrl($scope, $rootScope, $location, $mdSidenav, $mdDialog, defaults, ProjectService, UsersService, Editor, SyncProject, SyncUsersPresence) {
         var vm = this;
 
         /** the backend project */
@@ -22,6 +22,9 @@
         vm.revisionsAsArray;
 
         vm.isProjectLoaded = false;
+
+        //settings
+        vm.activeGitHubIntegration = defaults.enableGitHubIntegration;
 
         /**
          * Close this sidebar

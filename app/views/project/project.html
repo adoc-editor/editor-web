@@ -120,7 +120,7 @@
     </section>
   </md-content>
 
-  <div ng-show="user.auth && pCtrl.project" ng-controller="GithubFilesCtrl as gfiles">
+  <div ng-show="pCtrl.activeGitHubIntegration && user.auth && pCtrl.project" ng-controller="GithubFilesCtrl as gfiles">
 
     <md-content class="" style="" flex layout-fill>
       <md-divider></md-divider>
