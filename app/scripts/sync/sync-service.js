@@ -16,7 +16,7 @@
     }
   }]);
 
-  module.factory("SyncProject", ["FBURL", "$firebaseObject", "$firebaseArray", function(FBURL, $firebaseObject, $firebaseArray){
+  module.factory("SyncProject", ["FBURL", "defaults", "$firebaseObject", "$firebaseArray", function(FBURL, defaults, $firebaseObject, $firebaseArray){
     var ref = new Firebase(FBURL+"/projects/");
 
     var syncAsObject = function(projectId) {
@@ -56,7 +56,7 @@
       }
 
     var syncFileRevisionEventAsArray = function(projectId, fileId, revisionId) {
-        return $firebaseArray(ref.child(projectId).child("files").child(fileId).child("events").child("revision:"+revisionId));
+        return $firebaseArray(ref.child(projectId).child("files").child(fileId).child("events").child("revision:"+revisionId).limit(defaults.limitCollaborativeEvents));
     }
 
     var sync = function() {

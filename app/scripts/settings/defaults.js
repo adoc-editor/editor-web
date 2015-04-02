@@ -11,6 +11,7 @@ EditAdocApp.config(function ($provide) {
     version: '0.1.0',
     enableAttachUserToProjectForNoOwner: false,
     enableGitHubIntegration: false,
+    limitCollaborativeEvents: 20,
 
 
     exampleFiles: [
