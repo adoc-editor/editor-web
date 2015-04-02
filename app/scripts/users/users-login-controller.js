@@ -16,7 +16,7 @@
                     vm.ref = UsersService.createOrUpdateUser(authData);
                     //bind the Firebase user to $rootScope user
                     vm.ref.$bindTo($rootScope, "user").then(function() {
-                        console.log($rootScope.user);
+                        //console.log($rootScope.user);
                         //Handle Github Files
                         $gh.setCreds($rootScope.user.auth.github.accessToken);
                         $gh.getUser()
