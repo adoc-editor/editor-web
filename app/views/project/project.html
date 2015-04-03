@@ -30,11 +30,15 @@
         <md-item class="md-accent">
           <md-item-content>
             <div class="md-tile-content">
-              <form style="padding: 1px;margin:1px" ng-submit="pCtrl.newProject()">
+              <form style="padding: 1px;margin:1px" ng-submit="pCtrl.newProject()" name="projectForm">
                   <div layout layout-sm="column">
                       <md-input-container flex>
-                          <label>Create a new project</label>
-                          <input ng-model="pCtrl.theProject.name">
+                          <label>Enter a project name (ex: My project)</label>
+                          <input name="projectName" md-maxlength="30" ng-model="pCtrl.theProject.name" required placeholder="Submit to create a project.">
+                          <div ng-messages="projectForm.projectName.$error">
+                              <div ng-message="required">This is required.</div>
+                              <div ng-message="md-maxlength">Name has to be less than 30 characters long.</div>
+                          </div>
                       </md-input-container>
                   </div>
               </form>
@@ -84,11 +88,15 @@
                       <img ng-repeat="user in pCtrl.projectUsers | filter: { isOnline: false }" style="margin-left: 2px; padding-bottom:2px; border-bottom: grey solid 5px;"
                            ng-src="{{ user.avatar }}&s=24" alt="{{ user.username }}" title="{{ user.username }} is OFFLINE"/>
                   </span>
-                <form style="padding: 1px;"  ng-show="pCtrl.project" ng-submit="pCtrl.newBlankFile()">
+                <form style="padding: 1px;" name="projectFile"  ng-show="pCtrl.project" ng-submit="pCtrl.newBlankFile()">
                     <div layout layout-sm="column">
                       <md-input-container flex>
-                          <label>Create a new file</label>
-                          <input ng-model="pCtrl.theNewFile.name">
+                          <label>Enter a file name (ex: sample.adoc)</label>
+                          <input md-maxlength="30" required name="filename" ng-model="pCtrl.theNewFile.name" placeholder="Submit to create a file.">
+                          <div ng-messages="projectFile.filename.$error">
+                              <div ng-message="required">This is required.</div>
+                              <div ng-message="md-maxlength">Name has to be less than 30 characters long.</div>
+                          </div>
                       </md-input-container>
                   </div>
                 </form>

@@ -11,9 +11,9 @@
         vm.projectUsers;
 
         /** object to bind with the input */
-        vm.theProject = { id:'', name : "My AsciiDoc project"};
+        vm.theProject ;
         vm.loadedProject = { id: '', value:''};
-        vm.theNewFile = { id:'', name : "my-sample.adoc" };
+        vm.theNewFile;
 
         /** Current edited file */
         vm.refFile;
@@ -105,20 +105,13 @@
          * to this project.
          */
         vm.newProject = function(){
-          var newId = ProjectService.createProject(vm.theProject.name, $rootScope.user.auth.uid, $rootScope.user.auth.github.username);
-          vm.loadedProject.id = newId;
-          vm.theProject.id = newId;
-          vm.loadProject();
-          /**
-          vm.project = SyncProject.syncAsObject(id);
-          vm.project.$loaded().then(function(){
-              vm.isProjectLoaded = true;
-              vm.loadedProject = {}
-              vm.isOwner = true;
-              vm.sendUpdateBreadcrumbEvent({breadcrumb : {project : vm.project.name}});
-          });**/
-
-          vm.theProject.name = "";
+            if (vm.theProject.name.trim() != "" && vm.theProject.name.length <= 30){
+              var newId = ProjectService.createProject(vm.theProject.name, $rootScope.user.auth.uid, $rootScope.user.auth.github.username);
+              vm.loadedProject.id = newId;
+              vm.theProject.id = newId;
+              vm.loadProject();
+              vm.theProject.name = "";
+            }
         };
 
         /**
@@ -182,8 +175,10 @@
          * Create a new sample asciidoc file
          */
         vm.newBlankFile = function(){
-          vm.addFileToProject({ newFile : ProjectService.createNewBlankFile(vm.theNewFile.name)});
-          vm.theNewFile.name = "";
+            if (vm.theNewFile.name.trim() != "" && vm.theNewFile.name.length <= 30) {
+                vm.addFileToProject({newFile: ProjectService.createNewBlankFile(vm.theNewFile.name)});
+                vm.theNewFile.name = "";
+            }
         };
 
         /**
