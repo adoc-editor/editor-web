@@ -5,6 +5,7 @@ var EditAdocApp = angular.module('editAdoc', [
   'ui.ace',  // ace editor
   'firebase',  //firebase sync + auth
   'ngMaterial', //google material design
+  'ngMessages',
   'aql.asciidoc', //asciidoc -> html
   'ngStorage',  //local storage
   'octokit.adapter', //github api
