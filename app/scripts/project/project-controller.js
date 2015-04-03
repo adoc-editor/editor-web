@@ -56,6 +56,15 @@
         });
 
         /**
+         * The user closed the edited file.
+         */
+        $scope.$on('closeFileEvent', function (event, data) {
+            //Clean sync references
+            vm.refFile.$destroy();
+            vm.revisionsAsArray.$destroy();
+        });
+
+        /**
          * A SHA value is updated for file after a commit to github.
          */
         $scope.$on('updateSHAEvent', function (event, data) {
@@ -181,6 +190,7 @@
             }
         };
 
+
         /**
          * Edit an existing file into the editor
          */
@@ -199,7 +209,7 @@
               file: vm.project.files[idFile],
               message: "You're working on " + vm.project.files[idFile].name + " file."
             });
-            vm.sendUpdateBreadcrumbEvent({breadcrumb : {project : vm.project.name, file : vm.project.files[idFile].name}});
+            vm.sendUpdateBreadcrumbEvent({breadcrumb : {project : vm.project.name, file : vm.project.files[idFile].name, fileId: idFile, users: vm.projectUsers}});
 
           });
 

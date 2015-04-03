@@ -208,6 +208,20 @@
         }
 
         /**
+         * Close a file, clear all sync references.
+         */
+        function closeCurrentFileRevision(){
+            that.fileRevision =  null;
+            that.syncFileRevision.$destroy();
+            that.docEvents.$destroy();
+            //TODO: clean local storage ?
+            if (editor){
+             editor.getSession().setValue("");
+            }
+
+        }
+
+        /**
          * Set a string as a whole document to this editor session.
          *
          * @param content the string representing the whole document
@@ -321,6 +335,7 @@
         this.setUser = setUser;
         this.hasAlreadyFileRevisionAttached = hasAlreadyFileRevisionAttached;
         this.loadAsciidocFromAttachedFileRevision = loadAsciidocFromAttachedFileRevision;
+        this.closeCurrentFileRevision = closeCurrentFileRevision;
     }]);
 
 

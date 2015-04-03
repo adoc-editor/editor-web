@@ -10,14 +10,14 @@
         };
     }
 
-    function SubheaderCtrl ($scope, $location) {
+    function SubheaderCtrl ($rootScope, $scope, $location) {
         var vm = this;
 
         vm.breadcrumb = {
             project: "Select a project",
             file: "then edit a file !",
             fileId: "",
-            users: new Array()
+            users: new Array("one")
         };
 
         vm.isActive = function() {
@@ -26,6 +26,14 @@
             }
             return false;
         };
+
+        vm.closeFile = function(){
+            $rootScope.$broadcast('closeFileEvent', {
+                fileId : vm.breadcrumb.fileId
+            });
+            vm.breadcrumb.fileId = "";
+            vm.breadcrumb.file = "Choose a file to edit."
+        }
 
 
         //Update breadcrumb

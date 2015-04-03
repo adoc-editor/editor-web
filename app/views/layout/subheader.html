@@ -6,4 +6,12 @@
     <span style="text-decoration: underline;"  ng-click="app.toggleProject()">{{subheader.breadcrumb.project}}</span>
     <md-icon  md-svg-icon="navigation:ic_chevron_right_24px" style="width:16px;height:16px;" ></md-icon>
     {{subheader.breadcrumb.file}}
+    <md-button ng-show="subheader.breadcrumb.fileId != ''" title="Close this file" ng-click="subheader.closeFile()"
+               class="md-button-fab" aria-label="Close the file" style="padding:0">
+        <md-tooltip>
+            Close the file
+        </md-tooltip>
+        <md-icon  md-svg-icon="navigation:ic_cancel_24px" style="width:16px;height:16px;" ></md-icon>
+    </md-button>
+
 </md-subheader>

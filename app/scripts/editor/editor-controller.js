@@ -65,6 +65,15 @@
             });
         });
 
+        /**
+         * The user closed the edited file.
+         */
+        $scope.$on('closeFileEvent', function (event, data) {
+
+            Editor.closeCurrentFileRevision();
+
+        });
+
     }
 
     module.controller('EditorCtrl', EditorCtrl);
