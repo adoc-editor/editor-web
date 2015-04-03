@@ -214,11 +214,10 @@
             that.fileRevision =  null;
             that.syncFileRevision.$destroy();
             that.docEvents.$destroy();
-            //TODO: clean local storage ?
             if (editor){
              editor.getSession().setValue("");
             }
-
+            Storage.reset();
         }
 
         /**
