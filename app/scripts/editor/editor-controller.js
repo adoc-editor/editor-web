@@ -71,7 +71,6 @@
         $scope.$on('closeFileEvent', function (event, data) {
 
             Editor.closeCurrentFileRevision();
-            $location.path("/editor");
 
         });
 

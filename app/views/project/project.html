@@ -117,7 +117,13 @@
                       </md-tooltip>
                       <md-icon  md-svg-icon="action:ic_description_24px" style="width:16px;height:16px;" ></md-icon>
                     </md-button>
-                    <!-- TODO: find a better way to show the current edited file -->
+                    <md-button ng-show="f.id === pCtrl.refFile.id" title="Close this file" ng-click="pCtrl.closeFile(f.id)"
+                               class="md-button-fab" aria-label="Close the file" style="padding:0">
+                        <md-tooltip>
+                            Close the file
+                        </md-tooltip>
+                        <md-icon  md-svg-icon="navigation:ic_cancel_24px" style="width:16px;height:16px;" ></md-icon>
+                    </md-button>
                     <span ng-show="f.id === pCtrl.refFile.id">{{f.name}}</span>
                     <span ng-hide="f.id === pCtrl.refFile.id"><a class="md-theme" href="#/editor" ng-click="pCtrl.editFile(f.id)">{{f.name}}</a></span>
                   </li>

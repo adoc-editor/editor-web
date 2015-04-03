@@ -2,7 +2,7 @@
 
     var module = angular.module('editAdoc.preview.controller', []);
 
-    function PreviewCtrl($scope, Storage){
+    function PreviewCtrl($scope, $location, Storage){
         var vm = this;
 
         vm.asciidoc = {};
@@ -38,6 +38,10 @@
             if (data.fileRevision){
                 vm.asciidoc.ascii = data.fileRevision.asciidoc;
             }
+        });
+
+        $scope.$on('closeFileEvent', function (event, data) {
+            vm.asciidoc.ascii = "  ";
         });
     }
 

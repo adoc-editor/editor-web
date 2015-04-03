@@ -10,7 +10,7 @@
         };
     }
 
-    function SubheaderCtrl ($rootScope, $scope, $location) {
+    function SubheaderCtrl ($rootScope, $scope, $location, Storage) {
         var vm = this;
 
         vm.breadcrumb = {
@@ -28,6 +28,7 @@
         };
 
         vm.closeFile = function(){
+            Storage.reset();
             $rootScope.$broadcast('closeFileEvent', {
                 fileId : vm.breadcrumb.fileId
             });
@@ -39,6 +40,11 @@
         //Update breadcrumb
         $scope.$on('updateBreadcrumbEvent', function (event, data) {
             vm.breadcrumb = data;
+        });
+
+        $scope.$on('closeFileEvent', function (event, data) {
+            vm.breadcrumb.fileId = "";
+            vm.breadcrumb.file = "Choose a file to edit."
         });
 
     }

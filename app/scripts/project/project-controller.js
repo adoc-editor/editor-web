@@ -3,7 +3,7 @@
 
     var module = angular.module('editAdoc.project.controller', []);
 
-    function ProjectCtrl($scope, $rootScope, $location, $mdSidenav, $mdDialog, defaults, ProjectService, UsersService, Editor, SyncProject, SyncUsersPresence) {
+    function ProjectCtrl($scope, $rootScope, $location, $mdSidenav, $mdDialog, defaults, ProjectService, UsersService, Editor, Storage, SyncProject, SyncUsersPresence) {
         var vm = this;
 
         /** the backend project */
@@ -103,6 +103,16 @@
             $rootScope.$broadcast('updateBreadcrumbEvent', data.breadcrumb);
         };
 
+        /**
+         * Send an event to clean all views when the file is closed.
+         * @param data fileId
+         */
+        vm.sendCloseFileEvent = function(data){
+            $rootScope.$broadcast('closeFileEvent', {
+                fileId : data.fileId
+            });
+        }
+
 
         /**
          * ACTIONS
@@ -188,6 +198,14 @@
                 vm.addFileToProject({newFile: ProjectService.createNewBlankFile(vm.theNewFile.name)});
                 vm.theNewFile.name = "";
             }
+        };
+
+        /**
+         * Close the current edit file
+         */
+        vm.closeFile = function(id){
+            Storage.reset();
+            vm.sendCloseFileEvent({fileId : id})
         };
 
 
