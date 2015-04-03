@@ -1,17 +1,18 @@
-<md-subheader style="margin-right: 0;background-color: #f7f7f8" class="md-accent"
-              ng-controller="SubheaderCtrl as subheader" ng-show="subheader.isActive() && user.auth">
-    <md-icon md-svg-icon="image:ic_filter_{{subheader.breadcrumb.users.length}}_24px" style="color:#aed581;width:18px;height:18px;" ></md-icon>
-    <md-icon md-svg-icon="file:ic_folder_open_24px" alt="" style="width:16px;height:16px;" >
-    </md-icon>
-    <span style="text-decoration: underline;"  ng-click="app.toggleProject()">{{subheader.breadcrumb.project}}</span>
-    <md-icon  md-svg-icon="navigation:ic_chevron_right_24px" style="width:16px;height:16px;" ></md-icon>
-    {{subheader.breadcrumb.file}}
-    <md-button ng-show="subheader.breadcrumb.fileId != ''" title="Close this file" ng-click="subheader.closeFile()"
-               class="md-button-fab" aria-label="Close the file" style="padding:0">
-        <md-tooltip>
-            Close the file
-        </md-tooltip>
-        <md-icon  md-svg-icon="navigation:ic_cancel_24px" style="width:16px;height:16px;" ></md-icon>
-    </md-button>
-
-</md-subheader>
+<md-toolbar style="background-color: #f7f7f8; font-size:.9em; min-height: 0" class="md-accent"
+            ng-controller="SubheaderCtrl as subheader" ng-show="subheader.isActive() && user.auth">
+    <md-subheader class="md-accent">
+        <md-icon md-svg-icon="image:ic_filter_{{subheader.breadcrumb.users.length}}_24px" style="color:#aed581;width:18px;height:18px;" ></md-icon>
+        <md-icon md-svg-icon="file:ic_folder_open_24px" alt="" style="width:16px;height:16px;" >
+        </md-icon>
+        <span style="text-decoration: underline;"  ng-click="app.toggleProject()">{{subheader.breadcrumb.project}}</span>
+        <md-icon  md-svg-icon="navigation:ic_chevron_right_24px" style="width:16px;height:16px;" ></md-icon>
+        {{subheader.breadcrumb.file}}
+        <md-button ng-show="subheader.breadcrumb.fileId != ''" title="Close this file" ng-click="subheader.closeFile()"
+                   class="md-button-fab" aria-label="Close the file" style="padding:0">
+            <md-tooltip>
+                Close the file
+            </md-tooltip>
+            <md-icon  md-svg-icon="navigation:ic_cancel_24px" style="width:16px;height:16px;" ></md-icon>
+        </md-button>
+    </md-subheader>
+</md-toolbar>
