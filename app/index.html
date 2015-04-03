@@ -35,30 +35,26 @@
     <link href="styles/toolbar.css" rel="stylesheet">
     <!-- endbuild -->
   </head>
-  <body>
-  <div ng-controller="AppCtrl as app" layout="column" layout-wrap>
+  <body layout="row" ng-controller="AppCtrl as app">
+  <ng-include src="'views/layout/sidebar.html'"></ng-include>
+  <div layout="column" layout-wrap flex>
     <ng-include src="'views/layout/header.html'"></ng-include>
 
-    <section flex>
       <ng-include src="'views/layout/subheader.html'"></ng-include>
-      <ng-include src="'views/layout/sidebar.html'"></ng-include>
 
       <md-content flex class="md-content-fill">
         <div ui-view>
         </div>
       </md-content>
 
-      <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="users" >
-        <ng-include src="'views/users/users.html'" ></ng-include>
-      </md-sidenav>
-
-      <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="project" >
-        <ng-include src="'views/project/project.html'" ></ng-include>
-      </md-sidenav>
-
-    </section>
-
   </div>
+  <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="users" >
+    <ng-include src="'views/users/users.html'" ></ng-include>
+  </md-sidenav>
+
+  <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="project" >
+    <ng-include src="'views/project/project.html'" ></ng-include>
+  </md-sidenav>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
      <script>
