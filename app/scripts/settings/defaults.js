@@ -8,7 +8,7 @@ EditAdocApp.config(function ($provide) {
 
   // BEGIN-DEFAULTS-JSON
   {
-    version: '0.1.0',
+    version: '0.1.0.alpha2',
     enableAttachUserToProjectForNoOwner: false,
     enableGitHubIntegration: false,
     limitCollaborativeEvents: 20,
