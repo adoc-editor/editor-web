@@ -20,6 +20,7 @@
 
         /** handle revision for the file **/
         vm.revisionsAsArray;
+        vm.theFileRevisionId;
 
         vm.isProjectLoaded = false;
         vm.isOwner = false;
@@ -34,14 +35,6 @@
           $mdSidenav('project').close();
         };
 
-      /**
-       * EVENT with Backend (Firebase)
-       * -----------------------------
-       */
-      vm.listenToBackendEvent = function(idFile){
-        vm.refFile = SyncProject.syncFileAsObject(vm.project.$id, idFile);
-        vm.revisionsAsArray = SyncProject.syncFileRevisionsAsArray(vm.project.$id, idFile);
-      };
 
       /**
        * EVENTS with others controllers
@@ -49,10 +42,10 @@
        */
 
         /**
-         * A new file is added to the project.
+         * An external file (ex: github...) is added to the current project.
          */
         $scope.$on('addFileToProjectEvent', function (event, data) {
-            vm.addFileToProject(data);
+            vm.addFileToProject(data.file);
         });
 
         /**
@@ -68,7 +61,7 @@
          * A SHA value is updated for file after a commit to github.
          */
         $scope.$on('updateSHAEvent', function (event, data) {
-          vm.refFile.github.sha = data;
+          ProjectService.updateSHAForGitHubFile(vm.loadedProject.id, vm.refFile.$id, vm.theFileRevisionId, data);
         });
 
         /**
@@ -171,6 +164,7 @@
                 function(data){
                     var listUsers = SyncProject.syncUsersAsArray(vm.project.$id);
                     listUsers.$loaded().then(function(data){
+                        //TODO : find a better way to do that
                         listUsers[5] = {$id : vm.tmpTheId, $value: vm.tmpTheUsername};
                         listUsers.$save(5).then(
 
@@ -195,7 +189,7 @@
          */
         vm.newBlankFile = function(){
             if (vm.theNewFile.name.trim() != "" && vm.theNewFile.name.length <= 30) {
-                vm.addFileToProject({newFile: ProjectService.createNewBlankFile(vm.theNewFile.name)});
+                vm.addFileToProject(ProjectService.createNewBlankFile(vm.theNewFile.name));
                 vm.theNewFile.name = "";
             }
         };
@@ -213,25 +207,39 @@
          * Edit an existing file into the editor
          */
         vm.editFile = function(idFile){
-          vm.listenToBackendEvent(idFile);
-
-          vm.revisionsAsArray.$loaded().then(function(data){
-            var tmpFileRevision = data[0];
-            tmpFileRevision.fileId = idFile;
-            tmpFileRevision.projectId = vm.project.$id;
-            vm.sendAceLoadContentEvent({
-              fileRevision: tmpFileRevision
-            });
-
-            vm.sendNotifyUserEvent({
-              file: vm.project.files[idFile],
-              message: "You're working on " + vm.project.files[idFile].name + " file."
-            });
-            vm.sendUpdateBreadcrumbEvent({breadcrumb : {project : vm.project.name, file : vm.project.files[idFile].name, fileId: idFile, users: vm.projectUsers}});
-
-          });
-
+          //vm.listenToBackendEvent(idFile);
+            loadRevisionFileInEditor(idFile);
         };
+
+        /**
+         * Load a revision content in the editor and update the UI
+         * @param idFile
+         */
+        function loadRevisionFileInEditor(idFile){
+            vm.refFile = SyncProject.syncFileAsObject(vm.project.$id, idFile);
+            vm.refFile.$loaded().then(
+                function(){
+                    vm.revisionsAsArray = SyncProject.syncFileRevisionsAsArray(vm.project.$id, idFile);
+                    vm.revisionsAsArray.$loaded().then(function(data){
+                        //store the file revision ID for Github SHA1 update
+                        vm.theFileRevisionId = data[0].$id;
+                        var tmpFileRevision = data[0];
+                        tmpFileRevision.fileId = idFile;
+                        tmpFileRevision.projectId = vm.project.$id;
+                        vm.sendAceLoadContentEvent({
+                            fileRevision: tmpFileRevision
+                        });
+
+                        vm.sendNotifyUserEvent({
+                            file: vm.project.files[idFile],
+                            message: "You're working on " + vm.project.files[idFile].name + " file."
+                        });
+                        vm.sendUpdateBreadcrumbEvent({breadcrumb : {project : vm.project.name, file : vm.project.files[idFile].name, fileId: idFile, users: vm.projectUsers}});
+
+                    });
+                }
+            );
+        }
 
       /**
        * Add a file to the backend, watch this file, load the content into the editor,
@@ -240,21 +248,11 @@
        */
         vm.addFileToProject = function(newFile){
 
-          ProjectService.addFileToProject(vm.project.$id, newFile.newFile);
-          vm.listenToBackendEvent(newFile.newFile.id);
-            vm.refFile.$loaded().then(function(d){
-                vm.revisionsAsArray.$loaded().then(function(data){
-                    newFile.newFile.revision.projectId = vm.project.$id;
-                    vm.sendAceLoadContentEvent({
-                        fileRevision: newFile.newFile.revision
-                    });
-
-                    vm.sendNotifyUserEvent({
-                        file: newFile.newFile,
-                        message: "You're working on " + newFile.newFile.name + " file."
-                    });
-                });
-            });
+          ProjectService.addFileToProject(vm.project.$id, newFile).then(
+              function(){
+                  loadRevisionFileInEditor(newFile.id);
+              }
+          );
 
         };
 

@@ -42,24 +42,42 @@
 
     /**
      * Add a new file to the project
+     * TODO : DON'T USE OBJECT BUT REF WITH SET AND PUSH HERE
      * @param projectId the project ID
      * @param theFile the file object to add to this project
      */
     function addFileToProject(projectId, theFile) {
-      var file = SyncProject.syncFileAsObject(projectId, theFile.id);
-      file.$loaded().then(function(data){
-        file.id = theFile.id;
-        file.name = theFile.name;
-        file.$save().then(function(ref){
+      var deferred = $q.defer();
+      var syncOk;
+      var refFile = SyncProject.syncFileAsObject(projectId, theFile.id);
+      refFile.$loaded().then(function(data){
+      refFile.id = theFile.id;
+      refFile.name = theFile.name;
+
+        //check if it's a github file
+        if (theFile.provider != null && theFile.provider === "github"){
+            refFile.provider = theFile.provider;
+        }
+
+          var onComplete = function(error) {
+              if (error) {
+                  syncOk = false;
+              } else {
+                  syncOk = true;
+                  deferred.resolve(syncOk) ;
+              }
+          };
+
+
+       refFile.$save().then(function(ref){
           var fileRevisionsRef = SyncProject.syncFileRevisions(projectId, ref.key());
           theFile.revision.projectId = projectId;
-          fileRevisionsRef.push(theFile.revision);
 
-            return file;
-
+          fileRevisionsRef.push(theFile.revision, onComplete);
         });
 
       });
+        return deferred.promise;
     };
 
     /**
@@ -91,14 +109,15 @@
             "fileId" : "file:" + uid,
             "label" : "auto",
             "pdf_available" : false,
-            "html5_available" : false
+            "html5_available" : false,
+            "github" : {
+                path: 'sample.adoc',
+                repo: '',
+                sha: ''
+            }
           },
-        provider : "github",
-        github : {
-          path: 'sample.adoc',
-          repo: '',
-          sha: ''
-        }
+        provider : "github"
+
       }
     };
 
@@ -160,9 +179,22 @@
         provider: provider
       }
       if (provider === "github"){
-        file.github = fileMetadatas;
+        file.revision.github = fileMetadatas;
       }
       return file;
+    };
+
+
+      /**
+       * Update the SHA for a file hosted on GitHub.
+       *
+       * @param projectId
+       * @param fileId
+       * @param revisionId
+       * @param sha
+       */
+    function updateSHAForGitHubFile(projectId, fileId, revisionId, sha) {
+          SyncProject.syncFileRevisions(projectId, fileId).child(revisionId).child("github").child("sha").set(sha);
     };
 
       /**
@@ -171,7 +203,7 @@
        * @param userId
        */
     function isOwner(projectId, userId){
-          var deferred = $q.defer();
+      var deferred = $q.defer();
       var isOwner;
       var owner = SyncProject.syncOwnerAsObject(projectId);
       owner.$loaded().then(function(data){
@@ -205,6 +237,7 @@
     this.createSampleFile = createSampleFile;
     this.guid = guid;
     this.isOwner = isOwner;
+    this.updateSHAForGitHubFile = updateSHAForGitHubFile
 
   }]);
 

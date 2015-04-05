@@ -105,7 +105,7 @@
 
                   <ul style="margin-left: 0" >
                     <li style="list-style: none" ng-repeat="f in pCtrl.project.files">
-                    <md-button ng-show="f.github && f.id === pCtrl.refFile.id" title="Push to GitHub" ng-click="app.showPushDialog()" class="md-button-fab" aria-label="Push to GitHub" style="width: 30px; height: 30px;">
+                    <md-button ng-show="f.provider && f.id === pCtrl.refFile.id" title="Push to GitHub" ng-click="app.showPushDialog()" class="md-button-fab" aria-label="Push to GitHub" style="width: 30px; height: 30px;">
                       <md-tooltip>
                         Push to Github
                       </md-tooltip>
@@ -187,9 +187,12 @@
             </form>
             <ul>
               <li ng-repeat="file in search.results.items">
-                <md-button ng-show="pCtrl.project"  title="Add to project and Edit" ng-click="gfiles.addToProject(file.repository.name, file.sha, file.path)" class="md-primary" md-theme="cyan" aria-label="Profile" style="width: 30px; height: 30px;">
-                  <md-icon  icon="images/md-icons/content/svg/ic_add_circle_24px.svg" ></md-icon>
-                </md-button>
+                  <md-button title="Add file to project and Edit" ng-show="pCtrl.project" ng-click="gfiles.addToProject(file.repository.name, file.sha, file.path)" class="md-button-fab" aria-label="Edit" style="width: 30px; height: 30px;">
+                      <md-tooltip>
+                          Add file to project and Edit
+                      </md-tooltip>
+                      <md-icon  md-svg-icon="content:ic_add_circle_24px" style="color:rgb(76, 175, 80);width:16px;height:16px;" ></md-icon>
+                  </md-button>
                 <span ng-click="gfiles.addToProject(file.repository.name, file.sha, file.path)">{{file.name}} ({{file.repository.full_name}})</span>
               </li>
             </ul>

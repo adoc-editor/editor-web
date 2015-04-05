@@ -26,15 +26,15 @@
 
         /**
          * @name aceChangeEvent
-         * @desc suscribe to the aceChangeEvent in order to have the content of the editor for write action.
+         * @desc subscribe to the aceChangeEvent in order to have the content of the editor for write action.
          */
         $scope.$on('aceChangeEvent', function (event, data) {
-            vm.currentEditorFile = data.file;
+            vm.currentEditorFile = data.fileRevision;
         });
 
        /**
         * @name pushContentEvent
-        * @desc suscribe to the pushContentEvent in order commit the file to github
+        * @desc subscribe to the pushContentEvent in order commit the file to github
         */
        $scope.$on('pushContentEvent', function (event, data) {
          vm.pushContent(data.message);
@@ -110,6 +110,10 @@
                     return repo.git.getBlob(sha);
                 })
                 .then(function (content) {
+                    //Handle bug with path started with /
+                    if (path.indexOf("/") === 0){
+                        path = path.slice(1);
+                    }
                     vm.currentEditorFile = ProjectService.createFile("github", path, content, {
                         path: path,
                         repo: repoName,
@@ -182,9 +186,9 @@
          * @returns {array} an array of files which filename macthes with thr query
          */
         vm.searchAsciiDocFiles = function(){
-            $gh.setCreds($rootScope.authData.github.accessToken);
+            $gh.setCreds($rootScope.user.auth.github.accessToken);
 
-            var q = vm.query + '+in:path+language:asciidoc+user:'+$rootScope.authData.github.username;
+            var q = vm.query + '+in:path+language:asciidoc+user:'+$rootScope.user.auth.github.username;
             $gh.getSearch()
                 .then(function(search){
                     return search.searchCode(q, 'indexed', 'asc');
