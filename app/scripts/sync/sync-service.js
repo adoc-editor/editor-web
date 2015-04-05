@@ -55,10 +55,6 @@
       return $firebaseObject(ref.child(projectId).child("files").child(fileId).child("revisions").child(revisionId).child("asciidoc"));
     }
 
-    var syncFileRevisionEventAsArray = function(projectId, fileId, revisionId) {
-        return $firebaseArray(ref.child(projectId).child("files").child(fileId).child("events").child("revision:"+revisionId).limitToLast(defaults.limitCollaborativeEvents));
-    }
-
     var sync = function() {
       return ref;
     }
@@ -74,10 +70,26 @@
       syncFileRevisionsAsArray: syncFileRevisionsAsArray,
       syncFileRevisionAsObject: syncFileRevisionAsObject,
       syncFileRevisionAsciidocAsObject: syncFileRevisionAsciidocAsObject,
-      syncFileRevisionEventAsArray: syncFileRevisionEventAsArray,
       sync: sync
     }
   }]);
+
+    module.factory("SyncCollaborative", ["FBURL", "defaults", "$firebaseObject", "$firebaseArray", function(FBURL, defaults, $firebaseObject, $firebaseArray){
+        var ref = new Firebase(FBURL+"/collaborative/");
+
+        var sync = function() {
+            return ref;
+        }
+
+        var syncFileRevisionEventAsArray = function(projectId, fileId, revisionId) {
+            return $firebaseArray(ref.child(projectId).child("files").child(fileId).child("events").child("revision:"+revisionId).limitToLast(defaults.limitCollaborativeEvents));
+        }
+
+        return {
+            sync: sync,
+            syncFileRevisionEventAsArray: syncFileRevisionEventAsArray
+        }
+    }]);
 
   module.factory("SyncUser", ["FBURL", "$firebaseObject", "$firebaseArray", function(FBURL, $firebaseObject, $firebaseArray){
       var ref = new Firebase(FBURL+"/users/");

@@ -3,7 +3,7 @@
 
     var module = angular.module('editAdoc.editor.service', []);
 
-    module.service('Editor', ["SyncProject", "Storage", function Editor (SyncProject, Storage) {
+    module.service('Editor', ["SyncProject", "SyncCollaborative", "Storage", function Editor (SyncProject, SyncCollaborative, Storage) {
         var editor = null
         var onReadyFns = [];
         var changeFoldFns = [];
@@ -148,7 +148,7 @@
             if(that.isCollaborativeMode == true){
                 if (that.fileRevision && (that.docEvents == null
                     || (newFileRevision && newFileRevision.$id != that.fileRevision.$id)) ){
-                    that.docEvents = SyncProject.syncFileRevisionEventAsArray(that.fileRevision.projectId, that.fileRevision.fileId, that.fileRevision.$id);
+                    that.docEvents = SyncCollaborative.syncFileRevisionEventAsArray(that.fileRevision.projectId, that.fileRevision.fileId, that.fileRevision.$id);
                     if (that.docEvents){
                         that.docEvents.$loaded().then(function(data){
                             //watch events to add event from other users
