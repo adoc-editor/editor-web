@@ -28,6 +28,10 @@
          *
          */
         that.docEvents = null;
+        that.syncEvent = false;
+        that.refFileRevisionEvent = null;
+        that.refEventFromFirebase = null;
+
         /** the userId connected to the app */
         that.user =  null;
 
@@ -105,11 +109,17 @@
                 //User change
                 //console.log("user change (send to firebase)");
                 if (that.user != null){
-                    var collEvent = {
+                    /*var collEvent = {
                         "user": that.user,
                         "event": event
-                    }
-                    that.docEvents.$add(collEvent);
+                    }*/
+                    //Try with a push
+                    that.refFileRevisionEvent = SyncCollaborative.syncFileRevisionEvent(that.syncFileRevision.projectId, that.syncFileRevision.fileId, that.syncFileRevision.$id);
+                    that.refFileRevisionEvent.push({
+                        "user": that.user,
+                        "event": event
+                    });
+                    //that.docEvents.$add(collEvent);
                 }
             } else {
                 //API Change
@@ -145,22 +155,18 @@
          * @param file
          */
         function initDocEventsForFile(newFileRevision){
-            if(that.isCollaborativeMode == true){
-                if (that.fileRevision && (that.docEvents == null
-                    || (newFileRevision && newFileRevision.$id != that.fileRevision.$id)) ){
-                    that.docEvents = SyncCollaborative.syncFileRevisionEventAsArray(that.fileRevision.projectId, that.fileRevision.fileId, that.fileRevision.$id);
-                    if (that.docEvents){
-                        that.docEvents.$loaded().then(function(data){
-                            //watch events to add event from other users
-                            that.docEvents.$watch(function(event) {
-                                if (editor && that.user != null && that.docEvents.$getRecord(event.key) && that.docEvents.$getRecord(event.key).user != that.user){
-                                    var events = [that.docEvents.$getRecord(event.key).event.data];
-                                    editor.getSession().getDocument().applyDeltas(events);
-                                    //console.log("apply delta from firebase");
-                                }
-                            })
-                        })
-                    }
+
+            if(that.isCollaborativeMode == true) {
+                if (that.fileRevision && (that.syncEvent == false || (newFileRevision && newFileRevision.$id != that.fileRevision.$id))) {
+                    that.refEventFromFirebase = SyncCollaborative.syncFileRevisionEvent(that.syncFileRevision.projectId, that.syncFileRevision.fileId, that.syncFileRevision.$id);
+                    that.syncEvent = true;
+                    that.refEventFromFirebase.orderByKey().limitToLast(20).on("child_added", function (snapshot) {
+                        var collab = snapshot.val();
+                        if (editor && that.user != null && collab.user != that.user) {
+                            var events = [collab.event.data];
+                            editor.getSession().getDocument().applyDeltas(events);
+                        }
+                    });
                 }
             }
         }
@@ -193,6 +199,8 @@
          */
         function attachFileRevision(fileRevision){
             that.docEvents = null;
+            that.refEventFromFirebase = null;
+            that.refFileRevisionEvent = null;
 
             if(fileRevision && fileRevision.projectId && fileRevision.fileId && fileRevision.$id) {
                 that.fileRevision = fileRevision;
@@ -213,7 +221,11 @@
         function closeCurrentFileRevision(){
             that.fileRevision =  null;
             that.syncFileRevision.$destroy();
-            that.docEvents.$destroy();
+            that.syncEvent = false;
+            that.refEventFromFirebase = null;
+            that.refFileRevisionEvent = null;
+            if (that.docEvents != null)
+                that.docEvents.$destroy();
             if (editor){
              editor.getSession().setValue("");
             }

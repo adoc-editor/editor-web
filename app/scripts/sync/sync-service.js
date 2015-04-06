@@ -85,9 +85,14 @@
             return $firebaseArray(ref.child(projectId).child("files").child(fileId).child("events").child("revision:"+revisionId).limitToLast(defaults.limitCollaborativeEvents));
         }
 
+        var syncFileRevisionEvent = function(projectId, fileId, revisionId) {
+            return (ref.child(projectId).child("files").child(fileId).child("events").child("revision:"+revisionId));
+        }
+
         return {
             sync: sync,
-            syncFileRevisionEventAsArray: syncFileRevisionEventAsArray
+            syncFileRevisionEventAsArray: syncFileRevisionEventAsArray,
+            syncFileRevisionEvent: syncFileRevisionEvent
         }
     }]);
 
