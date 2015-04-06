@@ -201,6 +201,7 @@
             that.docEvents = null;
             that.refEventFromFirebase = null;
             that.refFileRevisionEvent = null;
+            that.syncEvent = false;
 
             if(fileRevision && fileRevision.projectId && fileRevision.fileId && fileRevision.$id) {
                 that.fileRevision = fileRevision;
@@ -224,8 +225,7 @@
             that.syncEvent = false;
             that.refEventFromFirebase = null;
             that.refFileRevisionEvent = null;
-            if (that.docEvents != null)
-                that.docEvents.$destroy();
+
             if (editor){
              editor.getSession().setValue("");
             }
