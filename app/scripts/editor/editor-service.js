@@ -120,13 +120,12 @@
                 //API Change
                 //console.log("doc : API change (don't fire event to firebase)");
                 if (editor){
-                    /*
                     editor.getSession().setAnnotations([{
                         row: event.data.range.start.row,
                         column: event.data.range.end.column,
-                        text: "an other user is typing...",
+                        text: "a user is typing...",
                         type: "warning" // also warning and information
-                    }]);*/
+                    }]);
                 }
             }
 
