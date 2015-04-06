@@ -27,10 +27,10 @@
          * events on the document represented this file
          *
          */
-        that.docEvents = null;
         that.syncEvent = false;
         that.refFileRevisionEvent = null;
         that.refEventFromFirebase = null;
+        that.onDataEvent = null;
 
         /** the userId connected to the app */
         that.user =  null;
@@ -107,12 +107,7 @@
             //and if this event is not send by the server
             if (editor && editor.curOp && editor.curOp.command.name){
                 //User change
-                //console.log("user change (send to firebase)");
                 if (that.user != null){
-                    /*var collEvent = {
-                        "user": that.user,
-                        "event": event
-                    }*/
                     //Try with a push
                     that.refFileRevisionEvent = SyncCollaborative.syncFileRevisionEvent(that.syncFileRevision.projectId, that.syncFileRevision.fileId, that.syncFileRevision.$id);
                     that.refFileRevisionEvent.push({
@@ -146,8 +141,6 @@
 
         function configureSession(session) {
             session.setTabSize(2);
-
-
         }
 
         /**
@@ -160,7 +153,7 @@
                 if (that.fileRevision && (that.syncEvent == false || (newFileRevision && newFileRevision.$id != that.fileRevision.$id))) {
                     that.refEventFromFirebase = SyncCollaborative.syncFileRevisionEvent(that.syncFileRevision.projectId, that.syncFileRevision.fileId, that.syncFileRevision.$id);
                     that.syncEvent = true;
-                    that.refEventFromFirebase.orderByKey().limitToLast(20).on("child_added", function (snapshot) {
+                    that.onDataEvent = that.refEventFromFirebase.orderByKey().limitToLast(20).on("child_added", function (snapshot) {
                         var collab = snapshot.val();
                         if (editor && that.user != null && collab.user != that.user) {
                             var events = [collab.event.data];
@@ -198,9 +191,13 @@
          * @param file
          */
         function attachFileRevision(fileRevision){
-            that.docEvents = null;
-            that.refEventFromFirebase = null;
-            that.refFileRevisionEvent = null;
+
+            if(that.refEventFromFirebase)
+                that.refEventFromFirebase.off("child_added", that.onDataEvent);
+            if(that.syncFileRevision)
+                that.syncFileRevision.$destroy();
+            if(that.refFileRevisionEvent)
+                that.refFileRevisionEvent = null;
             that.syncEvent = false;
 
             if(fileRevision && fileRevision.projectId && fileRevision.fileId && fileRevision.$id) {
@@ -223,7 +220,9 @@
             that.fileRevision =  null;
             that.syncFileRevision.$destroy();
             that.syncEvent = false;
-            that.refEventFromFirebase = null;
+            if(that.refEventFromFirebase){
+                that.refEventFromFirebase.off("child_added", that.onDataEvent);
+            }
             that.refFileRevisionEvent = null;
 
             if (editor){

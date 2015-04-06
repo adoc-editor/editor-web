@@ -1,0 +1,9 @@
+{
+  "firebase": "luminous-fire-672",
+  "public": ".",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}
