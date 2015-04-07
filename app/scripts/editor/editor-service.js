@@ -113,8 +113,7 @@
                     that.refFileRevisionEvent.push({
                         "user": that.user,
                         "event": event
-                    });
-                    //that.docEvents.$add(collEvent);
+                    }).setPriority(Firebase.ServerValue.TIMESTAMP);
                 }
             } else {
                 //API Change
@@ -152,7 +151,7 @@
                 if (that.fileRevision && (that.syncEvent == false || (newFileRevision && newFileRevision.$id != that.fileRevision.$id))) {
                     that.refEventFromFirebase = SyncCollaborative.syncFileRevisionEvent(that.syncFileRevision.projectId, that.syncFileRevision.fileId, that.syncFileRevision.$id);
                     that.syncEvent = true;
-                    that.onDataEvent = that.refEventFromFirebase.orderByKey().limitToLast(20).on("child_added", function (snapshot) {
+                    that.onDataEvent = that.refEventFromFirebase.startAt(Date.now()).on("child_added", function (snapshot) {
                         var collab = snapshot.val();
                         if (editor && that.user != null && collab.user != that.user) {
                             var events = [collab.event.data];
@@ -191,13 +190,7 @@
          */
         function attachFileRevision(fileRevision){
 
-            if(that.refEventFromFirebase)
-                that.refEventFromFirebase.off("child_added", that.onDataEvent);
-            if(that.syncFileRevision)
-                that.syncFileRevision.$destroy();
-            if(that.refFileRevisionEvent)
-                that.refFileRevisionEvent = null;
-            that.syncEvent = false;
+            resetDatasAndRef();
 
             if(fileRevision && fileRevision.projectId && fileRevision.fileId && fileRevision.$id) {
                 that.fileRevision = fileRevision;
@@ -217,17 +210,24 @@
          */
         function closeCurrentFileRevision(){
             that.fileRevision =  null;
-            that.syncFileRevision.$destroy();
-            that.syncEvent = false;
-            if(that.refEventFromFirebase){
-                that.refEventFromFirebase.off("child_added", that.onDataEvent);
-            }
-            that.refFileRevisionEvent = null;
+            resetDatasAndRef();
 
             if (editor){
              editor.getSession().setValue("");
             }
             Storage.reset();
+        }
+
+        function resetDatasAndRef(){
+            if(that.refEventFromFirebase){
+                that.refEventFromFirebase.off("child_added", that.onDataEvent);
+                that.refEventFromFirebase = null;
+            }
+            if(that.syncFileRevision)
+                that.syncFileRevision.$destroy();
+            if(that.refFileRevisionEvent)
+                that.refFileRevisionEvent = null;
+            that.syncEvent = false;
         }
 
         /**
