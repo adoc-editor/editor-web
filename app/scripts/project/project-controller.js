@@ -27,6 +27,7 @@
 
         //settings
         vm.activeGitHubIntegration = defaults.enableGitHubIntegration;
+        vm.activeGitHubSearch = defaults.enableGitHubSearch;
 
         /**
          * Close this sidebar

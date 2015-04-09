@@ -8,15 +8,17 @@ EditAdocApp.config(function ($provide) {
 
   // BEGIN-DEFAULTS-JSON
   {
-    version: '0.1.0.alpha5',
+    version: '0.1.0.alpha6',
 
     //notifications
     enableOnOnlineUserNotification: false,
 
-    enableAttachUserToProjectForNoOwner: false,
+    //GitHub
     enableGitHubIntegration: true,
-    limitCollaborativeEvents: 20,
+    enableGitHubSearch: false,
 
+    enableAttachUserToProjectForNoOwner: false,
+    limitCollaborativeEvents: 20,
 
     exampleFiles: [
       'default.adoc',
