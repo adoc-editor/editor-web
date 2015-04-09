@@ -25,6 +25,7 @@
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
     <link rel="stylesheet" href="bower_components/angular-material/angular-material.css" />
+    <link rel="stylesheet" href="bower_components/asciidoctor.js/dist/css/asciidoctor.css" />
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
@@ -34,6 +35,7 @@
     <link href="styles/toolbar.css" rel="stylesheet">
     <link rel="stylesheet" href="styles/asciidoctor-152.css" />
     <link rel="stylesheet" href="styles/font-awesome.min.css" />
+    <link rel="stylesheet" href="styles/highlight-default.css" />
     <!-- endbuild -->
   </head>
   <body layout="row" ng-controller="AppCtrl as app">
@@ -122,5 +124,6 @@
     <script src="scripts/preview/preview-controller.js"></script>
     <!-- endbuild -->
 
+  <script src="scripts/lib/highlight.pack.js"></script>
   </body>
 </html>

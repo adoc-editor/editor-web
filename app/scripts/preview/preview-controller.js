@@ -6,7 +6,7 @@
         var vm = this;
 
         vm.asciidoc = {};
-        vm.asciidoc.options = Opal.hash2(['safe', 'attributes'], {'safe': 'unsafe', 'attributes': 'showtitle showauthor icons=font@'});
+        vm.asciidoc.options = Opal.hash2(['safe', 'attributes'], {'safe': 'unsafe', 'attributes': 'showtitle=@ icons=font sectanchors=@ source-highlighter=highlightjs@'});
 
 
         Storage.load('fileRevision').then(function (data) {
@@ -21,16 +21,13 @@
          * @return {html} html updated
          */
         vm.asciidoc.postProcessor = function(element) {
-          var els = element.find('a[href^="#"]');
-          if (els.length > 0)
-            element.find('a[href^="#"]').each(function() {
-                var el = angular.element(this);
-                el.on('click', function(){
-                    $location.hash(el.attr('href'));
-                    $anchorScroll();
-                });
+            //highlight
+            var elsH = element.find('code');
+            angular.forEach(elsH, function(element){
+                hljs.highlightBlock(element);
             });
 
+          //TODO handle toc link
             return element;
         };
 
