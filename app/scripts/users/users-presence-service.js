@@ -2,9 +2,9 @@
 
     var module = angular.module("editAdoc.users.presence", []);
 
-  module.factory('UsersPresence', ['$rootScope', "SyncUserConnected", "SyncUser", "SyncUsersPresence",
+  module.factory('UsersPresence', ['$rootScope', "defaults" ,"SyncUserConnected", "SyncUser", "SyncUsersPresence",
 
-      function($rootScope, SyncUserConnected, SyncUser, SyncUsersPresence) {
+      function($rootScope, defaults, SyncUserConnected, SyncUser, SyncUsersPresence) {
           var onlineUsers = 0;
           var that = this;
 
@@ -22,16 +22,18 @@
           });
 
           //new user connected
-          presenceRef.on("child_changed", function(snapshot) {
-              if ($rootScope.user){
-                  var newUserConnected = snapshot.val();
-                  if (newUserConnected.username && newUserConnected.username != null &&
-                      newUserConnected.username != $rootScope.user.auth.github.username && newUserConnected.isOnline){
-                    $rootScope.$broadcast('onNewUserConnected', { user : newUserConnected})
+          if (defaults.enableOnOnlineUserNotification){
+              presenceRef.on("child_changed", function(snapshot) {
+                  if ($rootScope.user){
+                      var newUserConnected = snapshot.val();
+                      if (newUserConnected.username && newUserConnected.username != null &&
+                          newUserConnected.username != $rootScope.user.auth.github.username && newUserConnected.isOnline){
+                        $rootScope.$broadcast('onNewUserConnected', { user : newUserConnected})
+                      }
                   }
-              }
 
-          });
+              });
+          }
 
           var setUserConnectionAsAuthenticated = function(authData) {
               var myPresenceRef = SyncUsersPresence.syncUser(authData.uid);
