@@ -8,7 +8,7 @@ EditAdocApp.config(function ($provide) {
 
   // BEGIN-DEFAULTS-JSON
   {
-    version: '0.1.0.alpha7',
+    version: '0.1.0.alpha8',
 
     //notifications
     enableOnOnlineUserNotification: false,
