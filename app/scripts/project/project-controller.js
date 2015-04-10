@@ -119,12 +119,23 @@
          */
         vm.newProject = function(){
             if (vm.theProject.name.trim() != "" && vm.theProject.name.length <= 30){
-              var newId = ProjectService.createProject(vm.theProject.name, $rootScope.user.auth.uid, $rootScope.user.auth.github.username);
-              vm.loadedProject.id = newId;
-              vm.theProject.id = newId;
-              vm.loadProject();
-              vm.theProject.name = "";
+                vm.project.$destroy()/*.then(
+                    function(){*/
+                        resetSelectedProject();
+                        var newId = ProjectService.createProject(vm.theProject.name, $rootScope.user.auth.uid, $rootScope.user.auth.github.username);
+                        vm.loadedProject.id = newId;
+                        vm.theProject.id = newId;
+                        vm.loadProject();
+                        vm.theProject.name = "";
+                    /*}
+                );*/
             }
+        };
+
+        function resetSelectedProject(){
+            //clean selected project
+            vm.loadedProject = { id: '', value:''};
+            vm.theProject.id = null;
         };
 
         /**
