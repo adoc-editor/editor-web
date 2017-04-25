@@ -2,6 +2,11 @@
 
 _Collaborative Editor for AsciiDoc projects_
 
+== DEMO
+
+* https://www.youtube.com/watch?v=9Smp9XlkOdk
+* https://www.youtube.com/watch?v=CS0EPfVtIl0
+
 == How to start the web editor
 
 * Prerequisite
